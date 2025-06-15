@@ -102,7 +102,7 @@ export default function ColorLearningApp() {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
       utterance.rate = 0.8;
-      utterance.pitch = 1.2;
+      utterance.pitch = 1.4;
       speechSynthesis.speak(utterance);
     }
   };
@@ -254,7 +254,7 @@ export default function ColorLearningApp() {
               <span className="text-white font-bold text-lg">学</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-800">
-              こどもがくしゅう
+              こどもまなびアプリ
             </h1>
           </div>
           <Button

@@ -24,8 +24,8 @@ const hiraganaData: HiraganaItem[] = [
   {
     id: "i",
     character: "い",
-    word: "いるか",
-    reading: "いるか",
+    word: "いぬ",
+    reading: "いぬ",
     color: "#4ECDC4",
     row: "あ行",
   },
@@ -66,8 +66,8 @@ const hiraganaData: HiraganaItem[] = [
   {
     id: "ki",
     character: "き",
-    word: "きうい",
-    reading: "きうい",
+    word: "きりん",
+    reading: "きりん",
     color: "#98D8C8",
     row: "か行",
   },
@@ -90,8 +90,8 @@ const hiraganaData: HiraganaItem[] = [
   {
     id: "ko",
     character: "こ",
-    word: "こあら",
-    reading: "こあら",
+    word: "こうもり",
+    reading: "こうもり",
     color: "#85C1E9",
     row: "か行",
   },
@@ -200,8 +200,8 @@ const hiraganaData: HiraganaItem[] = [
   {
     id: "nu",
     character: "ぬ",
-    word: "ぬーどる",
-    reading: "ぬーどる",
+    word: "ぬりえ",
+    reading: "ぬりえ",
     color: "#D1ECF1",
     row: "な行",
   },
@@ -336,8 +336,8 @@ const hiraganaData: HiraganaItem[] = [
   {
     id: "ra",
     character: "ら",
-    word: "らいおん",
-    reading: "らいおん",
+    word: "らじお",
+    reading: "らじお",
     color: "#FDEAA7",
     row: "ら行",
   },
@@ -360,16 +360,16 @@ const hiraganaData: HiraganaItem[] = [
   {
     id: "re",
     character: "れ",
-    word: "れもん",
-    reading: "れもん",
+    word: "れたす",
+    reading: "れたす",
     color: "#D6DBDF",
     row: "ら行",
   },
   {
     id: "ro",
     character: "ろ",
-    word: "ろけっと",
-    reading: "ろけっと",
+    word: "ろば",
+    reading: "ろば",
     color: "#E8F6F3",
     row: "ら行",
   },
@@ -416,65 +416,60 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
     setTimeout(() => setSelectedCharacter(null), 1000);
   };
 
-  // 5文字ごとに列を変えて上から下に並べる
-  const columns = Math.ceil(hiraganaData.length / 5);
-  const rows = 5;
-  const items: (HiraganaItem | null)[] = [...hiraganaData];
-  while (items.length < columns * rows) items.push(null);
-  const grid: (HiraganaItem | null)[][] = [];
-  for (let col = 0; col < columns; col++) {
-    grid[col] = [];
-    for (let row = 0; row < rows; row++) {
-      grid[col][row] = items[row + col * rows];
-    }
-  }
+  // 各行ごとに縦に並べる（あ行、か行…や行、ら行、わ行）
+  const rowsData = [
+    hiraganaData.filter((item) => item.row === "あ行"),
+    hiraganaData.filter((item) => item.row === "か行"),
+    hiraganaData.filter((item) => item.row === "さ行"),
+    hiraganaData.filter((item) => item.row === "た行"),
+    hiraganaData.filter((item) => item.row === "な行"),
+    hiraganaData.filter((item) => item.row === "は行"),
+    hiraganaData.filter((item) => item.row === "ま行"),
+    hiraganaData.filter((item) => item.row === "や行"),
+    hiraganaData.filter((item) => item.row === "ら行"),
+    hiraganaData.filter((item) => item.row === "わ行"),
+  ];
 
   return (
     <div className="w-full">
-      {/* Hiragana Grid (vertical, right to left) */}
+      {/* Hiragana Grid: 各行ごとに縦並び、右から左 */}
       <div className="flex flex-row-reverse justify-center gap-3">
-        {grid.map((col, colIdx) => (
+        {rowsData.map((col, colIdx) => (
           <div key={colIdx} className="flex flex-col gap-3">
-            {col.map((item, rowIdx) =>
-              item ? (
+            {col.map((item, rowIdx) => (
+              <div
+                key={item.id}
+                className={`relative cursor-pointer transform transition-all duration-300 hover:scale-110 ${
+                  selectedCharacter === item.id ? "scale-125 animate-pulse" : ""
+                }`}
+                onClick={() => handleCharacterClick(item)}
+              >
                 <div
-                  key={item.id}
-                  className={`relative cursor-pointer transform transition-all duration-300 hover:scale-110 ${
-                    selectedCharacter === item.id
-                      ? "scale-125 animate-pulse"
-                      : ""
-                  }`}
-                  onClick={() => handleCharacterClick(item)}
+                  className="w-16 h-16 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative overflow-hidden"
+                  style={{ backgroundColor: item.color }}
                 >
-                  <div
-                    className="w-16 h-16 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative overflow-hidden"
-                    style={{ backgroundColor: item.color }}
-                  >
-                    <div className="text-2xl font-bold text-white drop-shadow-lg">
-                      {item.character}
-                    </div>
-                    {selectedCharacter === item.id && (
-                      <>
-                        <div className="absolute top-1 right-1 text-yellow-300 animate-ping text-xs">
-                          ✨
-                        </div>
-                        <div
-                          className="absolute bottom-1 left-1 text-yellow-300 animate-ping text-xs"
-                          style={{ animationDelay: "0.5s" }}
-                        >
-                          ✨
-                        </div>
-                      </>
-                    )}
+                  <div className="text-2xl font-bold text-white drop-shadow-lg">
+                    {item.character}
                   </div>
-                  <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                    {item.word}
-                  </div>
+                  {selectedCharacter === item.id && (
+                    <>
+                      <div className="absolute top-1 right-1 text-yellow-300 animate-ping text-xs">
+                        ✨
+                      </div>
+                      <div
+                        className="absolute bottom-1 left-1 text-yellow-300 animate-ping text-xs"
+                        style={{ animationDelay: "0.5s" }}
+                      >
+                        ✨
+                      </div>
+                    </>
+                  )}
                 </div>
-              ) : (
-                <div key={rowIdx} className="w-16 h-16" />
-              )
-            )}
+                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 hover:opacity-100 transition-opacity duration-200 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                  {item.word}
+                </div>
+              </div>
+            ))}
           </div>
         ))}
       </div>
