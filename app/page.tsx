@@ -95,6 +95,7 @@ export default function ColorLearningApp() {
   const [showPopup, setShowPopup] = useState(false);
   const [activeTab, setActiveTab] = useState("colors");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const popupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Text-to-speech function
   const speakText = (text: string, lang = "ja-JP") => {
@@ -110,26 +111,22 @@ export default function ColorLearningApp() {
   const handleCrayonClick = (crayon: Crayon) => {
     setSelectedCrayon(crayon);
     setShowPopup(true);
-
-    // Speak the color name in Japanese
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    popupTimeoutRef.current = setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
     speakText(crayon.nameJapanese);
-
-    // Use the crayon (increase usage)
     setCrayons((prev) =>
       prev.map((c) => {
         if (c.id === crayon.id) {
-          const newUsage = c.usage + 20; // 5回で100になるように20ずつ増加
-          // 5回使用したら自動的にリセット（新しいクレヨンに交換）
+          const newUsage = c.usage + 20;
           return { ...c, usage: newUsage >= 100 ? 0 : newUsage };
         }
         return c;
       })
     );
-
-    // Hide popup after 2 seconds
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 2000);
   };
 
   const resetCrayons = () => {
@@ -189,11 +186,13 @@ export default function ColorLearningApp() {
       usage: 0,
     });
     setShowPopup(true);
-    speakText(item.nameJapanese);
-
-    setTimeout(() => {
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    popupTimeoutRef.current = setTimeout(() => {
       setShowPopup(false);
     }, 2000);
+    speakText(item.nameJapanese);
   };
 
   const handleNumberClick = (number: any) => {
@@ -205,11 +204,13 @@ export default function ColorLearningApp() {
       usage: 0,
     });
     setShowPopup(true);
-    speakText(number.nameJapanese);
-
-    setTimeout(() => {
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    popupTimeoutRef.current = setTimeout(() => {
       setShowPopup(false);
     }, 2000);
+    speakText(number.nameJapanese);
   };
 
   const handleInstrumentClick = (instrument: any) => {
@@ -221,11 +222,13 @@ export default function ColorLearningApp() {
       usage: 0,
     });
     setShowPopup(true);
-    speakText(instrument.nameJapanese);
-
-    setTimeout(() => {
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    popupTimeoutRef.current = setTimeout(() => {
       setShowPopup(false);
     }, 2000);
+    speakText(instrument.nameJapanese);
   };
 
   const handleHiraganaClick = (item: any) => {
@@ -237,11 +240,13 @@ export default function ColorLearningApp() {
       usage: 0,
     });
     setShowPopup(true);
-    speakText(item.word);
-
-    setTimeout(() => {
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    popupTimeoutRef.current = setTimeout(() => {
       setShowPopup(false);
     }, 2000);
+    speakText(item.word);
   };
 
   return (
