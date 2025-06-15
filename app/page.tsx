@@ -326,18 +326,18 @@ export default function ColorLearningApp() {
       {/* Color Name Popup */}
       {showPopup && selectedCrayon && (
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 border-4 border-yellow-300">
-            <div className="text-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-4 border-4 border-yellow-300 min-w-[340px] max-w-[90vw]">
+            <div className="flex items-center space-x-6">
               <div
-                className="w-16 h-16 rounded-full mx-auto mb-4 border-4 border-gray-300"
+                className="w-20 h-20 rounded-full border-4 border-gray-300"
                 style={{ backgroundColor: selectedCrayon.color }}
               ></div>
-              <h3 className="text-3xl font-bold text-gray-800 mb-2">
-                {selectedCrayon.nameJapanese}
-              </h3>
-              <p className="text-lg text-gray-600">{selectedCrayon.name}</p>
-              <div className="mt-4">
-                <Volume2 className="w-8 h-8 mx-auto text-blue-500 animate-pulse" />
+              <div className="flex flex-col items-start">
+                <h3 className="text-3xl font-bold text-gray-800 mb-1">
+                  {selectedCrayon.nameJapanese}
+                </h3>
+                <p className="text-lg text-gray-600">{selectedCrayon.name}</p>
+                <Volume2 className="w-8 h-8 text-blue-500 animate-pulse mt-2" />
               </div>
             </div>
           </div>
