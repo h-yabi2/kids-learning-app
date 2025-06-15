@@ -205,7 +205,7 @@ export default function ColorLearningApp() {
       usage: 0,
     });
     setShowPopup(true);
-    speakText(`${number.number}、${number.nameJapanese}`);
+    speakText(number.nameJapanese);
 
     setTimeout(() => {
       setShowPopup(false);
