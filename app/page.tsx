@@ -76,7 +76,7 @@ const initialCrayons: Crayon[] = [
     id: "12",
     color: "#87CEEB",
     name: "Sky Blue",
-    nameJapanese: "そらいろ",
+    nameJapanese: "みずいろ",
     usage: 0,
   },
   { id: "13", color: "#0000FF", name: "Blue", nameJapanese: "あお", usage: 0 },
