@@ -93,7 +93,7 @@ export default function ColorLearningApp() {
   const [crayons, setCrayons] = useState<Crayon[]>(initialCrayons);
   const [selectedCrayon, setSelectedCrayon] = useState<Crayon | null>(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [activeTab, setActiveTab] = useState("colors");
+  const [activeTab, setActiveTab] = useState("hiragana");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const popupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -232,21 +232,8 @@ export default function ColorLearningApp() {
   };
 
   const handleHiraganaClick = (item: any) => {
-    setSelectedCrayon({
-      id: item.id ?? "hiragana",
-      nameJapanese: item.word,
-      name: item.reading,
-      color: item.color,
-      usage: 0,
-    });
-    setShowPopup(true);
-    if (popupTimeoutRef.current) {
-      clearTimeout(popupTimeoutRef.current);
-    }
-    popupTimeoutRef.current = setTimeout(() => {
-      setShowPopup(false);
-    }, 2000);
-    speakText(item.word);
+    // ひらがなクリック時はポップアップ表示なし（書き順練習ダイアログのみ）
+    // 音声読み上げは hiragana-scene.tsx 内で行われるため、ここでは何もしない
   };
 
   return (

@@ -8,6 +8,95 @@ export interface HiraganaItem {
   image?: string;
 }
 
+// 書き順データの型定義
+export interface StrokeData {
+  path: string;
+  number: number;
+  startPoint: [number, number];
+}
+
+export interface StrokeOrderData {
+  strokes: StrokeData[];
+  description: string;
+}
+
+// 書き順データ
+export const strokeOrderData: { [key: string]: StrokeOrderData } = {
+  あ: {
+    strokes: [
+      { path: "M50,20 Q80,40 70,80", number: 1, startPoint: [50, 20] },
+      { path: "M30,50 Q50,30 80,50", number: 2, startPoint: [30, 50] },
+    ],
+    description: "①横線から②縦線の順番で書きます",
+  },
+  い: {
+    strokes: [
+      { path: "M40,20 L40,80", number: 1, startPoint: [40, 20] },
+      { path: "M60,30 Q70,50 60,70", number: 2, startPoint: [60, 30] },
+    ],
+    description: "①縦線から②右の曲線の順番で書きます",
+  },
+  う: {
+    strokes: [
+      { path: "M30,30 Q50,20 70,40", number: 1, startPoint: [30, 30] },
+      { path: "M50,40 Q60,60 40,70", number: 2, startPoint: [50, 40] },
+    ],
+    description: "①上から②下へ順番に書きます",
+  },
+  え: {
+    strokes: [
+      { path: "M30,30 L70,30", number: 1, startPoint: [30, 30] },
+      { path: "M30,50 L60,50", number: 2, startPoint: [30, 50] },
+      { path: "M50,20 L50,70", number: 3, startPoint: [50, 20] },
+    ],
+    description: "①横線、②横線、③縦線の順番で書きます",
+  },
+  お: {
+    strokes: [
+      { path: "M30,25 L70,25", number: 1, startPoint: [30, 25] },
+      { path: "M30,45 L60,45", number: 2, startPoint: [30, 45] },
+      { path: "M50,15 L50,75", number: 3, startPoint: [50, 15] },
+      { path: "M65,35 Q75,55 65,70", number: 4, startPoint: [65, 35] },
+    ],
+    description: "①横線、②横線、③縦線、④右の曲線の順番で書きます",
+  },
+  か: {
+    strokes: [
+      { path: "M30,25 L70,25", number: 1, startPoint: [30, 25] },
+      { path: "M50,15 L50,45", number: 2, startPoint: [50, 15] },
+      { path: "M30,55 Q50,45 70,65", number: 3, startPoint: [30, 55] },
+    ],
+    description: "①横線、②縦線、③右はらいの順番で書きます",
+  },
+  き: {
+    strokes: [
+      { path: "M30,20 Q50,15 70,25", number: 1, startPoint: [30, 20] },
+      { path: "M25,35 L75,35", number: 2, startPoint: [25, 35] },
+      { path: "M50,10 L50,80", number: 3, startPoint: [50, 10] },
+    ],
+    description: "①上の横線、②下の横線、③縦線の順番で書きます",
+  },
+  く: {
+    strokes: [{ path: "M60,25 Q40,50 60,75", number: 1, startPoint: [60, 25] }],
+    description: "①一画で書きます",
+  },
+  け: {
+    strokes: [
+      { path: "M35,25 L65,25", number: 1, startPoint: [35, 25] },
+      { path: "M50,15 L50,45", number: 2, startPoint: [50, 15] },
+      { path: "M30,55 Q50,45 70,65", number: 3, startPoint: [30, 55] },
+    ],
+    description: "①横線、②縦線、③右はらいの順番で書きます",
+  },
+  こ: {
+    strokes: [
+      { path: "M30,30 L70,30", number: 1, startPoint: [30, 30] },
+      { path: "M30,60 Q50,50 70,60", number: 2, startPoint: [30, 60] },
+    ],
+    description: "①横線、②下の曲線の順番で書きます",
+  },
+};
+
 // 行ごとのカラーマッピング
 export const rowColors = {
   あ行: "#FF6B9D", // ピンク系
