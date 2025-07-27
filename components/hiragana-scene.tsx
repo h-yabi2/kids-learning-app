@@ -66,13 +66,56 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
   }, []);
 
   // Text-to-speech function
-  const speakText = (text: string, lang = "ja-JP") => {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = 0.8;
-      utterance.pitch = 1.4;
-      speechSynthesis.speak(utterance);
+  const speakText = async (text: string, lang = "ja-JP") => {
+    try {
+      const response = await fetch("/api/tts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: text,
+          voice: "ja-JP-Neural2-C", // 高品質な日本語音声
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("TTS API request failed");
+      }
+
+      const data = await response.json();
+      console.log("🎵 TTS Response:", {
+        format: data.format,
+        audioLength: data.audio?.length || 0,
+      });
+
+      // Base64音声データをデコードして再生
+      const audioBlob = new Blob(
+        [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
+        { type: data.format }
+      );
+
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl); // メモリリークを防ぐ
+      };
+
+      await audio.play();
+      console.log("✅ Google Cloud TTS used successfully");
+    } catch (error) {
+      console.error("TTS Error:", error);
+      console.log("🔄 Falling back to Web Speech API");
+      // フォールバック: Web Speech APIを使用
+      if ("speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.7;
+        utterance.pitch = 1.2;
+        utterance.volume = 0.9;
+        speechSynthesis.speak(utterance);
+      }
     }
   };
 
