@@ -239,8 +239,8 @@ export default function ColorLearningApp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
       {/* Header */}
-      <div className="bg-white shadow-md p-4">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
+      <div className="bg-white shadow-md py-4 px-6">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-lg">学</span>
