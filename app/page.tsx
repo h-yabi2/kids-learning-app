@@ -306,46 +306,6 @@ export default function ColorLearningApp() {
           </div>
         </div>
       )}
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="bg-white border-b">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="flex justify-center space-x-1">
-              {[
-                {
-                  id: "hiragana",
-                  label: "ひらがな",
-                  icon: "あ",
-                  active: false,
-                },
-                { id: "colors", label: "いろ", icon: "🖍️", active: false },
-                { id: "park", label: "こうえん", icon: "🏞️", active: false },
-                {
-                  id: "instruments",
-                  label: "がっき",
-                  icon: "🎼",
-                  active: false,
-                },
-                { id: "numbers", label: "すうじ", icon: "🔢", active: false },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  className={`px-6 py-3 rounded-t-lg font-medium transition-colors ${
-                    tab.id === activeTab
-                      ? "bg-green-100 text-green-700 border-b-2 border-green-500"
-                      : "text-gray-600 hover:bg-gray-50"
-                  }`}
-                  onClick={() => handleTabClick(tab.id)}
-                >
-                  <span className="mr-2">{tab.icon}</span>
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
