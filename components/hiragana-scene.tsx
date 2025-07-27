@@ -494,9 +494,9 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
   return (
     <div className="w-full">
       {/* Hiragana Grid: 各行ごとに縦並び、右から左 */}
-      <div className="flex flex-row-reverse justify-center gap-6">
+      <div className="flex flex-row-reverse justify-center gap-3">
         {rowsData.map((col, colIdx) => (
-          <div key={colIdx} className="flex flex-col gap-8">
+          <div key={colIdx} className="flex flex-col gap-4">
             {col.map((item, rowIdx) => (
               <div
                 key={item.id}
@@ -506,11 +506,11 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                 onClick={() => handleCharacterClick(item)}
               >
                 {/* メインブロック：ひらがな文字とアイコンを統合 */}
-                <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-3 shadow-xl border-2 border-white/30">
-                  <div className="flex items-center justify-center gap-3">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-xl border-2 border-white/30">
+                  <div className="flex items-center justify-center gap-1">
                     {/* ひらがな文字 */}
                     <div
-                      className="w-16 h-16 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative overflow-hidden"
+                      className="w-14 h-14 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative overflow-hidden"
                       style={{ backgroundColor: item.color }}
                     >
                       <div className="text-2xl font-bold text-white drop-shadow-lg">

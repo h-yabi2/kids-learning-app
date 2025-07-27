@@ -303,8 +303,8 @@ export default function ColorLearningApp() {
       </div> */}
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto p-6">
-        <Card className="p-8 bg-white/80 backdrop-blur-sm shadow-xl">
+      <div className="p-6">
+        <Card className="p-6 bg-transparent shadow-none border-none">
           {activeTab === "hiragana" && (
             <HiraganaTab onHiraganaClick={handleHiraganaClick} />
           )}
