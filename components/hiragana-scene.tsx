@@ -161,7 +161,8 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
       setShowHanamaru(true);
 
       // 花丸表示時に音声読み上げ
-      const congratsText = `よくできました！「${selectedCharacter}」が じょうずに かけましたね！`;
+      const congratsText = `よくできました！`;
+      // const congratsText = `よくできました！「${selectedCharacter}」が じょうずに かけましたね！`;
       speakText(congratsText);
 
       // キャンバスをクリアして描画をリセット
@@ -387,8 +388,27 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
           <div className="space-y-4">
             {/* 大きな文字表示 */}
             <div className="text-center">
-              <div className="text-8xl font-bold text-gray-800 mb-2">
-                {selectedCharacter}
+              <div className="flex items-center justify-center gap-4 mb-2">
+                <div className="text-8xl font-bold text-gray-800">
+                  {selectedCharacter}
+                </div>
+                {selectedCharacter && (
+                  <div className="flex-shrink-0">
+                    <img
+                      src={`${
+                        hiraganaData.find(
+                          (item) => item.character === selectedCharacter
+                        )?.image || ""
+                      }`}
+                      alt={`${selectedCharacter}のイラスト`}
+                      className="w-16 h-16 object-contain"
+                      onError={(e) => {
+                        // 画像が読み込めない場合は非表示にする
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -474,9 +494,9 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                     <div className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-3 animate-pulse">
                       よくできました！
                     </div>
-                    <div className="text-lg text-gray-600 animate-in slide-in-from-bottom-4 duration-700 delay-300">
+                    {/* <div className="text-lg text-gray-600 animate-in slide-in-from-bottom-4 duration-700 delay-300">
                       「{selectedCharacter}」が じょうずに かけましたね！
-                    </div>
+                    </div> */}
 
                     {/* 追加の装飾 */}
                     <div className="mt-4 flex justify-center space-x-2">
