@@ -488,7 +488,11 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                   <div className="relative z-10">
                     <div className="mb-4 flex justify-center">
                       <div className="w-24 h-24 text-6xl animate-bounce">
-                        🌸
+                        <img
+                          src="/hanamaru.svg"
+                          alt="よくできました"
+                          className="w-full h-full object-contain"
+                        />
                       </div>
                     </div>
                     <div className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-3 animate-pulse">
