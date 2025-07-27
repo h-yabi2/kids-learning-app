@@ -426,7 +426,7 @@ export default function HiraganaScene({
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md mx-auto bg-white/90 backdrop-blur-sm">
+        <DialogContent className="max-w-[50%] mx-auto bg-white/90 backdrop-blur-sm">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl">
               「{selectedCharacter}」の れんしゅう
@@ -485,7 +485,7 @@ export default function HiraganaScene({
 
               <canvas
                 ref={canvasRef}
-                width={200}
+                width={350}
                 height={200}
                 className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair mx-auto block"
                 onMouseDown={startTracing}
