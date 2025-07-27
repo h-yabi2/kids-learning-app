@@ -397,7 +397,7 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
 
             {/* page.tsxスタイルの花丸表示 */}
             {showHanamaru && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 animate-in fade-in duration-300">
+              <div className="fixed inset-0 flex items-center justify-center z-50 animate-in fade-in duration-300 !mt-0 border-none rounded-sm">
                 <div className="bg-white rounded-2xl p-8 text-center shadow-2xl transform animate-in zoom-in-95 duration-500 relative overflow-hidden">
                   {/* キラキラエフェクト */}
                   <div className="absolute inset-0 pointer-events-none">
