@@ -116,6 +116,26 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
   const checkDrawing = () => {
     if (hasUserDrawing) {
       setShowHanamaru(true);
+
+      // 花丸表示時に音声読み上げ
+      const congratsText = `よくできました！「${selectedCharacter}」が じょうずに かけましたね！`;
+      speakText(congratsText);
+
+      // キャンバスをクリアして描画をリセット
+      if (canvasRef.current) {
+        const ctx = canvasRef.current.getContext("2d");
+        if (ctx) {
+          ctx.clearRect(
+            0,
+            0,
+            canvasRef.current.width,
+            canvasRef.current.height
+          );
+        }
+      }
+      setUserStrokes([]);
+      setHasUserDrawing(false);
+
       setTimeout(() => {
         setShowHanamaru(false);
       }, 4000); // 4秒後に花丸を非表示
@@ -314,19 +334,11 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-md mx-auto">
+        <DialogContent className="max-w-md mx-auto bg-white/90 backdrop-blur-sm">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl">
               「{selectedCharacter}」の れんしゅう
             </DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-4"
-              onClick={closeModal}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -346,25 +358,10 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
 
             {/* なぞり練習エリア */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex justify-center items-center mb-2">
                 <span className="text-sm font-medium text-gray-700">
                   なぞって れんしゅう しよう！
                 </span>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={resetStrokes}>
-                    <RotateCcw className="h-4 w-4 mr-1" />
-                    リセット
-                  </Button>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={checkDrawing}
-                    disabled={!hasUserDrawing}
-                    className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300"
-                  >
-                    これでOK
-                  </Button>
-                </div>
               </div>
 
               <canvas
@@ -380,6 +377,22 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                 onTouchMove={trace}
                 onTouchEnd={stopTracing}
               />
+
+              <div className="flex justify-center gap-2 mt-2">
+                <Button variant="outline" size="sm" onClick={resetStrokes}>
+                  <RotateCcw className="h-4 w-4 mr-1" />
+                  リセット
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={checkDrawing}
+                  disabled={!hasUserDrawing}
+                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300"
+                >
+                  これでOK
+                </Button>
+              </div>
             </div>
 
             {/* page.tsxスタイルの花丸表示 */}
@@ -419,7 +432,7 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                       よくできました！
                     </div>
                     <div className="text-lg text-gray-600 animate-in slide-in-from-bottom-4 duration-700 delay-300">
-                      「{selectedCharacter}」が じょうずに かけました
+                      「{selectedCharacter}」が じょうずに かけましたね！
                     </div>
 
                     {/* 追加の装飾 */}
