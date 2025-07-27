@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,9 +17,15 @@ import {
 
 interface HiraganaSceneProps {
   onHiraganaClick: (item: HiraganaItem) => void;
+  kotoItem?: HiraganaItem;
+  onKotoClick?: () => void;
 }
 
-export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
+export default function HiraganaScene({
+  onHiraganaClick,
+  kotoItem,
+  onKotoClick,
+}: HiraganaSceneProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
     null
   );
@@ -66,7 +72,7 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
   }, []);
 
   // Text-to-speech function
-  const speakText = async (text: string, lang = "ja-JP") => {
+  const speakText = useCallback(async (text: string, lang = "ja-JP") => {
     try {
       const response = await fetch("/api/tts", {
         method: "POST",
@@ -117,19 +123,47 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
         speechSynthesis.speak(utterance);
       }
     }
-  };
+  }, []);
 
-  const handleCharacterClick = (item: HiraganaItem) => {
-    setSelectedCharacter(item.character);
-    setIsModalOpen(true);
-    setUserStrokes([]);
-    setShowResult(false);
-    setIsCorrect(false);
-    setShowHanamaru(false);
-    setHasUserDrawing(false);
-    speakText(item.word);
-    onHiraganaClick(item);
-  };
+  const handleCharacterClick = useCallback(
+    (item: HiraganaItem) => {
+      console.log("🎬 handleCharacterClickが呼ばれました:", item);
+      setSelectedCharacter(item.character);
+      setIsModalOpen(true);
+      setUserStrokes([]);
+      setShowResult(false);
+      setIsCorrect(false);
+      setShowHanamaru(false);
+      setHasUserDrawing(false);
+      speakText(item.word);
+      onHiraganaClick(item);
+      console.log("✅ ダイアログを開きました");
+    },
+    [onHiraganaClick, speakText]
+  );
+
+  const handleKotoClick = useCallback(() => {
+    console.log("🎯 handleKotoClickが呼ばれました");
+    if (kotoItem) {
+      console.log("📝 kotoItem:", kotoItem);
+      handleCharacterClick(kotoItem);
+    } else {
+      console.log("❌ kotoItemがありません");
+    }
+  }, [kotoItem, handleCharacterClick]);
+
+  // 外部からの「こと」クリックを処理
+  useEffect(() => {
+    // グローバル関数としてhandleKotoClickを公開
+    (window as any).triggerKotoClick = () => {
+      console.log("🌐 グローバルtriggerKotoClickが呼ばれました");
+      handleKotoClick();
+    };
+
+    return () => {
+      delete (window as any).triggerKotoClick;
+    };
+  }, [handleKotoClick]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -264,52 +298,66 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
         ctx.lineWidth = 2;
         ctx.setLineDash([5, 5]);
 
-        strokeOrderData[selectedCharacter].strokes.forEach(
-          (strokeData, index) => {
-            const path = new Path2D(strokeData.path);
-            ctx.stroke(path);
+        const strokes =
+          selectedCharacter === "こと"
+            ? kotoStrokeData.strokes
+            : strokeOrderData[selectedCharacter]?.strokes || [];
 
-            // 書き順番号を表示
-            ctx.setLineDash([]);
-            ctx.fillStyle = "#ef4444";
-            ctx.font = "bold 16px sans-serif";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
+        strokes.forEach((strokeData, index) => {
+          const path = new Path2D(strokeData.path);
+          ctx.stroke(path);
 
-            // 番号の背景円を描画
-            ctx.beginPath();
-            ctx.arc(
-              strokeData.startPoint[0],
-              strokeData.startPoint[1],
-              12,
-              0,
-              2 * Math.PI
-            );
-            ctx.fillStyle = "#ffffff";
-            ctx.fill();
-            ctx.strokeStyle = "#ef4444";
-            ctx.lineWidth = 2;
-            ctx.stroke();
+          // 書き順番号を表示
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#ef4444";
+          ctx.font = "bold 16px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
 
-            // 番号を描画
-            ctx.fillStyle = "#ef4444";
-            ctx.fillText(
-              strokeData.number.toString(),
-              strokeData.startPoint[0],
-              strokeData.startPoint[1]
-            );
+          // 番号の背景円を描画
+          ctx.beginPath();
+          ctx.arc(
+            strokeData.startPoint[0],
+            strokeData.startPoint[1],
+            12,
+            0,
+            2 * Math.PI
+          );
+          ctx.fillStyle = "#ffffff";
+          ctx.fill();
+          ctx.strokeStyle = "#ef4444";
+          ctx.lineWidth = 2;
+          ctx.stroke();
 
-            // 次の描画のためにリセット
-            ctx.strokeStyle = "#e5e7eb";
-            ctx.lineWidth = 2;
-            ctx.setLineDash([5, 5]);
-          }
-        );
+          // 番号を描画
+          ctx.fillStyle = "#ef4444";
+          ctx.fillText(
+            strokeData.number.toString(),
+            strokeData.startPoint[0],
+            strokeData.startPoint[1]
+          );
+
+          // 次の描画のためにリセット
+          ctx.strokeStyle = "#e5e7eb";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
+        });
 
         ctx.setLineDash([]);
       }
     }
   }, [selectedCharacter]);
+
+  // 「こと」の書き順データ
+  const kotoStrokeData = {
+    strokes: [
+      { path: "M30,30 L70,30", number: 1, startPoint: [30, 30] },
+      { path: "M30,60 Q50,50 70,60", number: 2, startPoint: [30, 60] },
+      { path: "M40,20 L40,80", number: 3, startPoint: [40, 20] },
+      { path: "M60,30 Q70,50 60,70", number: 4, startPoint: [60, 30] },
+    ],
+    description: "①横線、②下の曲線、③縦線、④右の曲線の順番で書きます",
+  };
 
   // 各行ごとに縦に並べる（あ行、か行…や行、ら行、わ行）
   const rowsData = [
@@ -326,7 +374,7 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
   ];
 
   return (
-    <div className="w-full px-1">
+    <div className="w-full px-1" data-hiragana-scene>
       {/* Hiragana Grid: 各行ごとに縦並び、右から左 */}
       <div className="flex flex-row-reverse justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
         {rowsData.map((col, colIdx) => (
@@ -395,11 +443,13 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                 {selectedCharacter && (
                   <div className="flex-shrink-0">
                     <img
-                      src={`${
-                        hiraganaData.find(
-                          (item) => item.character === selectedCharacter
-                        )?.image || ""
-                      }`}
+                      src={
+                        selectedCharacter === "こと"
+                          ? "/images/koto.png"
+                          : hiraganaData.find(
+                              (item) => item.character === selectedCharacter
+                            )?.image || ""
+                      }
                       alt={`${selectedCharacter}のイラスト`}
                       className="w-16 h-16 object-contain"
                       onError={(e) => {
@@ -413,11 +463,17 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
             </div>
 
             {/* 書き順説明 */}
-            {selectedCharacter && strokeOrderData[selectedCharacter] && (
-              <div className="text-center text-sm text-gray-600 mb-4">
-                {strokeOrderData[selectedCharacter].description}
-              </div>
-            )}
+            {selectedCharacter &&
+              ((strokeOrderData[selectedCharacter] && (
+                <div className="text-center text-sm text-gray-600 mb-4">
+                  {strokeOrderData[selectedCharacter].description}
+                </div>
+              )) ||
+                (selectedCharacter === "こと" && (
+                  <div className="text-center text-sm text-gray-600 mb-4">
+                    {kotoStrokeData.description}
+                  </div>
+                )))}
 
             {/* なぞり練習エリア */}
             <div className="bg-gray-50 rounded-lg p-4">
