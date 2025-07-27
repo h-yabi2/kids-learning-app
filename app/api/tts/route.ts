@@ -5,8 +5,20 @@ import { TextToSpeechClient, protos } from "@google-cloud/text-to-speech";
 let client: TextToSpeechClient;
 
 try {
+  // Base64エンコードされた認証情報をデコード
+  const credentialsBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
+  if (!credentialsBase64) {
+    throw new Error(
+      "GOOGLE_CREDENTIALS_BASE64 environment variable is not set"
+    );
+  }
+
+  const credentials = JSON.parse(
+    Buffer.from(credentialsBase64, "base64").toString("utf-8")
+  );
+
   client = new TextToSpeechClient({
-    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+    credentials: credentials,
     projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
   });
 } catch (error) {
@@ -18,8 +30,8 @@ export async function POST(request: NextRequest) {
   try {
     // 環境変数の確認
     console.log(
-      "GOOGLE_APPLICATION_CREDENTIALS:",
-      process.env.GOOGLE_APPLICATION_CREDENTIALS
+      "GOOGLE_CREDENTIALS_BASE64:",
+      process.env.GOOGLE_CREDENTIALS_BASE64 ? "Set" : "Not set"
     );
     console.log(
       "GOOGLE_CLOUD_PROJECT_ID:",
