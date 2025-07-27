@@ -33,11 +33,14 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full px-1">
       {/* Hiragana Grid: 各行ごとに縦並び、右から左 */}
-      <div className="flex flex-row-reverse justify-center gap-3">
+      <div className="flex flex-row-reverse justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
         {rowsData.map((col, colIdx) => (
-          <div key={colIdx} className="flex flex-col gap-4">
+          <div
+            key={colIdx}
+            className="flex flex-col gap-2 sm:gap-3 md:gap-4 flex-1"
+          >
             {col.map((item, rowIdx) => (
               <div
                 key={item.id}
@@ -47,23 +50,23 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                 onClick={() => handleCharacterClick(item)}
               >
                 {/* メインブロック：ひらがな文字とアイコンを統合 */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-xl border-2 border-white/30">
-                  <div className="flex items-center justify-center gap-1">
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl md:rounded-2xl py-3 shadow-xl border-2 border-white/30 w-full">
+                  <div className="flex items-center justify-center gap-0.5 sm:gap-1 w-full">
                     {/* ひらがな文字 */}
                     <div
-                      className="w-14 h-14 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center relative overflow-hidden"
+                      className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg border-2 sm:border-3 md:border-4 border-white flex items-center justify-center relative overflow-hidden"
                       style={{ backgroundColor: item.color }}
                     >
-                      <div className="text-2xl font-bold text-white drop-shadow-lg">
+                      <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white drop-shadow-lg">
                         {item.character}
                       </div>
                       {selectedCharacter === item.id && (
                         <>
-                          <div className="absolute top-1 right-1 text-yellow-300 animate-ping text-xs">
+                          <div className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 text-yellow-300 animate-ping text-xs">
                             ✨
                           </div>
                           <div
-                            className="absolute bottom-1 left-1 text-yellow-300 animate-ping text-xs"
+                            className="absolute bottom-0.5 left-0.5 sm:bottom-1 sm:left-1 text-yellow-300 animate-ping text-xs"
                             style={{ animationDelay: "0.5s" }}
                           >
                             ✨
@@ -73,19 +76,19 @@ export default function HiraganaScene({ onHiraganaClick }: HiraganaSceneProps) {
                     </div>
 
                     {/* アイコンと単語 */}
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col items-center gap-0.5 sm:gap-1 w-[40%]">
                       {item.image && (
-                        <div className="w-12 h-12 flex items-center justify-center overflow-hidden">
+                        <div className="aspect-square w-full max-w-12 min-w-6 flex items-center justify-center overflow-hidden">
                           <img
                             src={item.image}
                             alt={item.word}
-                            className="w-10 h-10 object-cover rounded"
+                            className="w-full h-full object-cover rounded"
                           />
                         </div>
                       )}
                       {/* <span className="text-xs font-medium text-gray-700 text-center leading-tight max-w-16">
-                        {item.word}
-                      </span> */}
+                         {item.word}
+                       </span> */}
                     </div>
                   </div>
                 </div>
