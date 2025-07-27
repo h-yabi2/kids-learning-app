@@ -120,7 +120,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "あいすくりーむ",
     color: rowColors["あ行"],
     row: "あ行",
-    image: "/icon/50-sounds/あいすくりーむ.png",
+    image: "/icon/50-sounds/1.png",
   },
   {
     id: "i",
@@ -129,7 +129,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "いるか",
     color: rowColors["あ行"],
     row: "あ行",
-    image: "/icon/50-sounds/いるか.png",
+    image: "/icon/50-sounds/2.png",
   },
   {
     id: "u",
@@ -138,7 +138,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "うさぎ",
     color: rowColors["あ行"],
     row: "あ行",
-    image: "/icon/50-sounds/うさぎ.png",
+    image: "/icon/50-sounds/3.png",
   },
   {
     id: "e",
@@ -147,7 +147,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "えぷろん",
     color: rowColors["あ行"],
     row: "あ行",
-    image: "/icon/50-sounds/エプロン.png",
+    image: "/icon/50-sounds/4.png",
   },
   {
     id: "o",
@@ -156,7 +156,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "おれんじ",
     color: rowColors["あ行"],
     row: "あ行",
-    image: "/icon/50-sounds/おれんじ.png",
+    image: "/icon/50-sounds/5.png",
   },
 
   // か行
@@ -167,7 +167,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "かめら",
     color: rowColors["か行"],
     row: "か行",
-    image: "/icon/50-sounds/かめら.png",
+    image: "/icon/50-sounds/6.png",
   },
   {
     id: "ki",
@@ -176,7 +176,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "きうい",
     color: rowColors["か行"],
     row: "か行",
-    image: "/icon/50-sounds/きうい.png",
+    image: "/icon/50-sounds/7.png",
   },
   {
     id: "ku",
@@ -185,7 +185,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "くっきー",
     color: rowColors["か行"],
     row: "か行",
-    image: "/icon/50-sounds/くっきー.png",
+    image: "/icon/50-sounds/8.png",
   },
   {
     id: "ke",
@@ -194,7 +194,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "けーき",
     color: rowColors["か行"],
     row: "か行",
-    image: "/icon/50-sounds/けーき.png",
+    image: "/icon/50-sounds/9.png",
   },
   {
     id: "ko",
@@ -203,7 +203,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "こあら",
     color: rowColors["か行"],
     row: "か行",
-    image: "/icon/50-sounds/こあら.png",
+    image: "/icon/50-sounds/10.png",
   },
 
   // さ行
@@ -214,7 +214,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "さっかー",
     color: rowColors["さ行"],
     row: "さ行",
-    image: "/icon/50-sounds/さっかー.png",
+    image: "/icon/50-sounds/11.png",
   },
   {
     id: "shi",
@@ -223,7 +223,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "しーと",
     color: rowColors["さ行"],
     row: "さ行",
-    image: "/icon/50-sounds/しーと.png",
+    image: "/icon/50-sounds/12.png",
   },
   {
     id: "su",
@@ -232,7 +232,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "すかーと",
     color: rowColors["さ行"],
     row: "さ行",
-    image: "/icon/50-sounds/すかーと.png",
+    image: "/icon/50-sounds/13.png",
   },
   {
     id: "se",
@@ -241,7 +241,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "せーたー",
     color: rowColors["さ行"],
     row: "さ行",
-    image: "/icon/50-sounds/せーたー.png",
+    image: "/icon/50-sounds/14.png",
   },
   {
     id: "so",
@@ -250,7 +250,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "そーせーじ",
     color: rowColors["さ行"],
     row: "さ行",
-    image: "/icon/50-sounds/そーせーじ.png",
+    image: "/icon/50-sounds/15.png",
   },
 
   // た行
@@ -261,7 +261,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "たんぽぽ",
     color: rowColors["た行"],
     row: "た行",
-    image: "/icon/50-sounds/たんぽぽ.png",
+    image: "/icon/50-sounds/16.png",
   },
   {
     id: "chi",
@@ -270,7 +270,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ちょこれーと",
     color: rowColors["た行"],
     row: "た行",
-    image: "/icon/50-sounds/ちょこれーと.png",
+    image: "/icon/50-sounds/17.png",
   },
   {
     id: "tsu",
@@ -279,7 +279,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "つばめ",
     color: rowColors["た行"],
     row: "た行",
-    image: "/icon/50-sounds/つばめ.png",
+    image: "/icon/50-sounds/18.png",
   },
   {
     id: "te",
@@ -288,7 +288,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "てにす",
     color: rowColors["た行"],
     row: "た行",
-    image: "/icon/50-sounds/てにす.png",
+    image: "/icon/50-sounds/19.png",
   },
   {
     id: "to",
@@ -297,7 +297,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "といれ",
     color: rowColors["た行"],
     row: "た行",
-    image: "/icon/50-sounds/といれ.png",
+    image: "/icon/50-sounds/20.png",
   },
 
   // な行
@@ -308,7 +308,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ないふ",
     color: rowColors["な行"],
     row: "な行",
-    image: "/icon/50-sounds/ないふ.png",
+    image: "/icon/50-sounds/21.png",
   },
   {
     id: "ni",
@@ -317,7 +317,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "にわとり",
     color: rowColors["な行"],
     row: "な行",
-    image: "/icon/50-sounds/にわとり.png",
+    image: "/icon/50-sounds/22.png",
   },
   {
     id: "nu",
@@ -326,7 +326,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ぬいぐるみ",
     color: rowColors["な行"],
     row: "な行",
-    image: "/icon/50-sounds/ぬいぐるみ.png",
+    image: "/icon/50-sounds/23.png",
   },
   {
     id: "ne",
@@ -335,7 +335,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ねずみ",
     color: rowColors["な行"],
     row: "な行",
-    image: "/icon/50-sounds/ねずみ.png",
+    image: "/icon/50-sounds/24.png",
   },
   {
     id: "no",
@@ -344,7 +344,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "のーと",
     color: rowColors["な行"],
     row: "な行",
-    image: "/icon/50-sounds/のーと.png",
+    image: "/icon/50-sounds/25.png",
   },
 
   // は行
@@ -355,7 +355,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "はーもにか",
     color: rowColors["は行"],
     row: "は行",
-    image: "/icon/50-sounds/は.png",
+    image: "/icon/50-sounds/26.png",
   },
   {
     id: "hi",
@@ -364,7 +364,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ひーろー",
     color: rowColors["は行"],
     row: "は行",
-    image: "/icon/50-sounds/ひ.png",
+    image: "/icon/50-sounds/27.png",
   },
   {
     id: "fu",
@@ -373,7 +373,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ふらいぱん",
     color: rowColors["は行"],
     row: "は行",
-    image: "/icon/50-sounds/ふ.png",
+    image: "/icon/50-sounds/28.png",
   },
   {
     id: "he",
@@ -382,7 +382,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "へりこぷたー",
     color: rowColors["は行"],
     row: "は行",
-    image: "/icon/50-sounds/へ.png",
+    image: "/icon/50-sounds/29.png",
   },
   {
     id: "ho",
@@ -391,7 +391,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ほっとけーき",
     color: rowColors["は行"],
     row: "は行",
-    image: "/icon/50-sounds/ほ.png",
+    image: "/icon/50-sounds/30.png",
   },
 
   // ま行
@@ -402,7 +402,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "まふらー",
     color: rowColors["ま行"],
     row: "ま行",
-    image: "/icon/50-sounds/ま.png",
+    image: "/icon/50-sounds/31.png",
   },
   {
     id: "mi",
@@ -411,7 +411,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "みるく",
     color: rowColors["ま行"],
     row: "ま行",
-    image: "/icon/50-sounds/み.png",
+    image: "/icon/50-sounds/32.png",
   },
   {
     id: "mu",
@@ -420,7 +420,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "むささび",
     color: rowColors["ま行"],
     row: "ま行",
-    image: "/icon/50-sounds/む.png",
+    image: "/icon/50-sounds/33.png",
   },
   {
     id: "me",
@@ -429,7 +429,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "めろん",
     color: rowColors["ま行"],
     row: "ま行",
-    image: "/icon/50-sounds/め.png",
+    image: "/icon/50-sounds/34.png",
   },
   {
     id: "mo",
@@ -438,7 +438,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ものれーる",
     color: rowColors["ま行"],
     row: "ま行",
-    image: "/icon/50-sounds/も.png",
+    image: "/icon/50-sounds/35.png",
   },
 
   // や行
@@ -449,7 +449,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "やどかり",
     color: rowColors["や行"],
     row: "や行",
-    image: "/icon/50-sounds/や.png",
+    image: "/icon/50-sounds/36.png",
   },
   {
     id: "yu",
@@ -458,7 +458,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ゆり",
     color: rowColors["や行"],
     row: "や行",
-    image: "/icon/50-sounds/ゆ.png",
+    image: "/icon/50-sounds/37.png",
   },
   {
     id: "yo",
@@ -467,7 +467,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "よっと",
     color: rowColors["や行"],
     row: "や行",
-    image: "/icon/50-sounds/よ.png",
+    image: "/icon/50-sounds/38.png",
   },
 
   // ら行
@@ -478,7 +478,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "らーめん",
     color: rowColors["ら行"],
     row: "ら行",
-    image: "/icon/50-sounds/ら.png",
+    image: "/icon/50-sounds/39.png",
   },
   {
     id: "ri",
@@ -487,7 +487,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "りもこん",
     color: rowColors["ら行"],
     row: "ら行",
-    image: "/icon/50-sounds/り.png",
+    image: "/icon/50-sounds/40.png",
   },
   {
     id: "ru",
@@ -496,7 +496,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "るびー",
     color: rowColors["ら行"],
     row: "ら行",
-    image: "/icon/50-sounds/る.png",
+    image: "/icon/50-sounds/41.png",
   },
   {
     id: "re",
@@ -505,7 +505,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "れもん",
     color: rowColors["ら行"],
     row: "ら行",
-    image: "/icon/50-sounds/れ.png",
+    image: "/icon/50-sounds/42.png",
   },
   {
     id: "ro",
@@ -514,7 +514,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ろけっと",
     color: rowColors["ら行"],
     row: "ら行",
-    image: "/icon/50-sounds/ろ.png",
+    image: "/icon/50-sounds/43.png",
   },
 
   // わ行
@@ -525,7 +525,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "わに",
     color: rowColors["わ行"],
     row: "わ行",
-    image: "/icon/50-sounds/わ.png",
+    image: "/icon/50-sounds/44.png",
   },
   {
     id: "wo",
@@ -534,7 +534,7 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "てをあらう",
     color: rowColors["わ行"],
     row: "わ行",
-    image: "/icon/50-sounds/を.png",
+    image: "/icon/50-sounds/45.png",
   },
   {
     id: "n",
@@ -543,6 +543,6 @@ export const hiraganaData: HiraganaItem[] = [
     reading: "ぱんだ",
     color: rowColors["わ行"],
     row: "わ行",
-    image: "/icon/50-sounds/ん.png",
+    image: "/icon/50-sounds/46.png",
   },
 ];
