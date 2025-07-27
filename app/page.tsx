@@ -262,49 +262,12 @@ export default function ColorLearningApp() {
               こどもまなびアプリ
             </h1>
           </div>
-          <Button
-            onClick={resetCrayons}
-            variant="outline"
-            size="sm"
-            className="flex items-center space-x-2"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>リセット</span>
-          </Button>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      {/* <div className="bg-white border-b">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex space-x-1">
-            {[
-              { id: "hiragana", label: "ひらがな", icon: "あ", active: false },
-              { id: "colors", label: "いろ", icon: "🖍️", active: false },
-              { id: "park", label: "こうえん", icon: "🏞️", active: false },
-              { id: "instruments", label: "がっき", icon: "🎼", active: false },
-              { id: "numbers", label: "すうじ", icon: "🔢", active: false },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                className={`px-6 py-3 rounded-t-lg font-medium transition-colors ${
-                  tab.id === activeTab
-                    ? "bg-green-100 text-green-700 border-b-2 border-green-500"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-                onClick={() => handleTabClick(tab.id)}
-              >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div> */}
-
       {/* Main Content */}
-      <div className="p-8">
-        <Card className="bg-transparent shadow-none border-none">
+      <div className="flex items-center justify-center min-h-[calc(100vh-140px)] p-6">
+        <Card className="bg-transparent shadow-none border-none w-full">
           {activeTab === "hiragana" && (
             <HiraganaTab onHiraganaClick={handleHiraganaClick} />
           )}
