@@ -71,28 +71,37 @@ export default function HiraganaScene({
     };
   }, []);
 
-  // Text-to-speech function
+  // Text-to-speech function using VOICEVOX
   const speakText = useCallback(async (text: string, lang = "ja-JP") => {
     try {
-      const response = await fetch("/api/tts", {
+      // まずVOICEVOXを試す
+      const response = await fetch("/api/voicevox-tts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           text: text,
-          voice: "ja-JP-Neural2-C", // 高品質な日本語音声
+          speaker: "春歌ナナ", // 歌うような優しい声のキャラクター
         }),
       });
 
       if (!response.ok) {
-        throw new Error("TTS API request failed");
+        throw new Error(`VOICEVOX API request failed: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("🎵 TTS Response:", {
+
+      // サーバーエラーでフォールバック指示がある場合
+      if (data.fallback) {
+        throw new Error("Server requested fallback");
+      }
+
+      console.log("🎵 VOICEVOX Response:", {
         format: data.format,
         audioLength: data.audio?.length || 0,
+        cached: data.cached || false,
+        speaker: data.speaker,
       });
 
       // Base64音声データをデコードして再生
@@ -108,20 +117,93 @@ export default function HiraganaScene({
         URL.revokeObjectURL(audioUrl); // メモリリークを防ぐ
       };
 
+      audio.onerror = () => {
+        console.error("VOICEVOX audio playback failed, falling back");
+        URL.revokeObjectURL(audioUrl);
+        // 音声再生エラー時のフォールバック
+        fallbackToGoogleTTS(text).catch(() => fallbackToWebSpeech(text, lang));
+      };
+
       await audio.play();
-      console.log("✅ Google Cloud TTS used successfully");
+      console.log(
+        `✅ VOICEVOX used successfully with ${data.speaker} ${
+          data.cached ? "(cached)" : "(new)"
+        }`
+      );
     } catch (error) {
-      console.error("TTS Error:", error);
-      console.log("🔄 Falling back to Web Speech API");
-      // フォールバック: Web Speech APIを使用
-      if ("speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 0.7;
-        utterance.pitch = 1.2;
-        utterance.volume = 0.9;
-        speechSynthesis.speak(utterance);
+      console.error("VOICEVOX Error:", error);
+      // Google Cloud TTSにフォールバック
+      try {
+        await fallbackToGoogleTTS(text);
+      } catch (googleError) {
+        console.error("Google TTS also failed:", googleError);
+        // 最終的にWeb Speech APIを使用
+        fallbackToWebSpeech(text, lang);
       }
+    }
+  }, []);
+
+  // Google Cloud TTSフォールバック関数
+  const fallbackToGoogleTTS = useCallback(async (text: string) => {
+    console.log("🔄 Falling back to Google Cloud TTS");
+    const response = await fetch("/api/tts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: text,
+        voice: "ja-JP-Neural2-C",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Google TTS API request failed");
+    }
+
+    const data = await response.json();
+    const audioBlob = new Blob(
+      [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
+      { type: data.format }
+    );
+
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+
+    audio.onended = () => {
+      URL.revokeObjectURL(audioUrl);
+    };
+
+    await audio.play();
+    console.log("✅ Google Cloud TTS fallback used successfully");
+  }, []);
+
+  // Web Speech APIフォールバック関数
+  const fallbackToWebSpeech = useCallback((text: string, lang: string) => {
+    console.log("🔄 Falling back to Web Speech API");
+    if ("speechSynthesis" in window) {
+      // 既存の発話をキャンセル
+      speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      utterance.rate = 0.7; // 子供向けにゆっくり
+      utterance.pitch = 1.3; // 少し高めの声
+      utterance.volume = 0.9;
+
+      // 日本語音声の優先選択
+      const voices = speechSynthesis.getVoices();
+      const japaneseVoice = voices.find(
+        (voice) => voice.lang.includes("ja") && voice.localService
+      );
+      if (japaneseVoice) {
+        utterance.voice = japaneseVoice;
+      }
+
+      speechSynthesis.speak(utterance);
+      console.log("✅ Web Speech API fallback used");
+    } else {
+      console.error("❌ No speech synthesis available");
     }
   }, []);
 

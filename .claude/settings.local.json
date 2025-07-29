@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:qiita.com)",
+      "Bash(curl:*)",
+      "Bash(git restore:*)",
+      "WebFetch(domain:voicevox.github.io)",
+      "Bash(npm run:*)"
     ],
     "deny": []
   }
