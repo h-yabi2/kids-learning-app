@@ -465,7 +465,7 @@ export default function HiraganaScene({
       </div>
 
       {/* スマートフォンレイアウト: 2段構造 */}
-      <div className="block sm:hidden space-y-6">
+      <div className="block sm:hidden space-y-8">
         {/* 上段: あ行〜な行 */}
         <div className="flex flex-row-reverse justify-center gap-1">
           {topGroupRows.map((col, colIdx) => (
@@ -513,7 +513,7 @@ export default function HiraganaScene({
         </div>
 
         {/* 下段: は行〜わ行 */}
-        <div className="flex flex-row-reverse justify-center gap-1">
+        <div className="flex flex-row-reverse justify-center gap-1 pt-4">
           {bottomGroupRows.map((col, colIdx) => (
             <div
               key={colIdx}

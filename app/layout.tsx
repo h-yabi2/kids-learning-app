@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ひらがなおべんきょう",
   description: "ひらがなおべんきょう",
   generator: "ひらがなおべんきょう",
-  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
   icons: [
     {
       rel: "icon",
@@ -13,6 +12,13 @@ export const metadata: Metadata = {
       type: "image/png",
     },
   ],
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  maximumScale: 1.0,
+  userScalable: false,
 };
 
 export default function RootLayout({
