@@ -297,6 +297,25 @@ export default function HiraganaScene({
     setIsTracing(false);
   };
 
+  // キャンバスサイズをレスポンシブに調整
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const updateCanvasSize = () => {
+        const isSmallScreen = window.innerWidth < 640;
+        canvas.width = isSmallScreen ? 280 : 350;
+        canvas.height = isSmallScreen ? 160 : 200;
+      };
+      
+      updateCanvasSize();
+      window.addEventListener('resize', updateCanvasSize);
+      
+      return () => {
+        window.removeEventListener('resize', updateCanvasSize);
+      };
+    }
+  }, [selectedCharacter]);
+
   useEffect(() => {
     if (
       canvasRef.current &&
@@ -388,62 +407,163 @@ export default function HiraganaScene({
     hiraganaData.filter((item) => item.row === "わ行"),
   ];
 
+  // スマートフォン向けのグループ分け
+  const topGroupRows = rowsData.slice(0, 5); // あ行〜な行
+  const bottomGroupRows = rowsData.slice(5); // は行〜わ行
+
   return (
     <div className="w-full px-1" data-hiragana-scene>
-      {/* Hiragana Grid: 各行ごとに縦並び、右から左 */}
-      <div className="flex flex-row-reverse justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
-        {rowsData.map((col, colIdx) => (
-          <div
-            key={colIdx}
-            className="flex flex-col gap-2 sm:gap-3 md:gap-4 flex-1"
-          >
-            {col.map((item) => (
-              <div
-                key={item.id}
-                className="relative cursor-pointer transform transition-all duration-300 hover:scale-105"
-                onClick={() => handleCharacterClick(item)}
-              >
-                {/* メインブロック：ひらがな文字とアイコンを統合 */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl md:rounded-2xl py-3 shadow-xl border-2 border-white/30 w-full">
-                  <div className="flex items-center justify-center gap-0.5 sm:gap-1 w-full">
-                    {/* ひらがな文字 */}
-                    <div
-                      className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg border-2 sm:border-3 md:border-4 border-white flex items-center justify-center relative overflow-hidden"
-                      style={{ backgroundColor: item.color }}
-                    >
-                      <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white drop-shadow-lg">
-                        {item.character}
-                      </div>
-                    </div>
-
-                    {/* アイコンと単語 */}
-                    <div className="flex flex-col items-center gap-0.5 sm:gap-1 w-[40%]">
-                      {item.image && (
-                        <div className="aspect-square w-full max-w-12 min-w-6 flex items-center justify-center overflow-hidden">
-                          <img
-                            src={item.image}
-                            alt={item.word}
-                            className="w-full h-full object-cover rounded"
-                          />
+      {/* デスクトップレイアウト: 横一列表示 */}
+      <div className="hidden sm:block">
+        <div className="flex flex-row-reverse justify-center gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+          {rowsData.map((col, colIdx) => (
+            <div
+              key={colIdx}
+              className="flex flex-col gap-2 sm:gap-3 md:gap-4 flex-1"
+            >
+              {col.map((item) => (
+                <div
+                  key={item.id}
+                  className="relative cursor-pointer transform transition-all duration-300 hover:scale-105"
+                  onClick={() => handleCharacterClick(item)}
+                >
+                  {/* メインブロック：ひらがな文字とアイコンを統合 */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl md:rounded-2xl py-3 shadow-xl border-2 border-white/30 w-full">
+                    <div className="flex items-center justify-center gap-0.5 sm:gap-1 w-full">
+                      {/* ひらがな文字 */}
+                      <div
+                        className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg border-2 sm:border-3 md:border-4 border-white flex items-center justify-center relative overflow-hidden"
+                        style={{ backgroundColor: item.color }}
+                      >
+                        <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white drop-shadow-lg">
+                          {item.character}
                         </div>
-                      )}
-                      {/* <span className="text-xs font-medium text-gray-700 text-center leading-tight max-w-16">
-                         {item.word}
-                       </span> */}
+                      </div>
+
+                      {/* アイコンと単語 */}
+                      <div className="flex flex-col items-center gap-0.5 sm:gap-1 w-[40%]">
+                        {item.image && (
+                          <div className="aspect-square w-full max-w-12 min-w-6 flex items-center justify-center overflow-hidden">
+                            <img
+                              src={item.image}
+                              alt={item.word}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          </div>
+                        )}
+                        {/* <span className="text-xs font-medium text-gray-700 text-center leading-tight max-w-16">
+                           {item.word}
+                         </span> */}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ))}
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* スマートフォンレイアウト: 2段構造 */}
+      <div className="block sm:hidden space-y-6">
+        {/* 上段: あ行〜な行 */}
+        <div className="flex flex-row-reverse justify-center gap-1">
+          {topGroupRows.map((col, colIdx) => (
+            <div
+              key={colIdx}
+              className="flex flex-col gap-2 flex-1"
+            >
+              {col.map((item) => (
+                <div
+                  key={item.id}
+                  className="relative cursor-pointer transform transition-all duration-300 hover:scale-105"
+                  onClick={() => handleCharacterClick(item)}
+                >
+                  {/* メインブロック：ひらがな文字とアイコンを統合 */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-lg py-3 shadow-xl border-2 border-white/30 w-full">
+                    <div className="flex items-center justify-center gap-0.5 w-full">
+                      {/* ひらがな文字 */}
+                      <div
+                        className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg shadow-lg border-2 border-white flex items-center justify-center relative overflow-hidden"
+                        style={{ backgroundColor: item.color }}
+                      >
+                        <div className="text-sm font-bold text-white drop-shadow-lg">
+                          {item.character}
+                        </div>
+                      </div>
+
+                      {/* アイコンと単語 */}
+                      <div className="flex flex-col items-center gap-0.5 w-[40%]">
+                        {item.image && (
+                          <div className="aspect-square w-full max-w-12 min-w-6 flex items-center justify-center overflow-hidden">
+                            <img
+                              src={item.image}
+                              alt={item.word}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* 下段: は行〜わ行 */}
+        <div className="flex flex-row-reverse justify-center gap-1">
+          {bottomGroupRows.map((col, colIdx) => (
+            <div
+              key={colIdx}
+              className="flex flex-col gap-2 flex-1"
+            >
+              {col.map((item) => (
+                <div
+                  key={item.id}
+                  className="relative cursor-pointer transform transition-all duration-300 hover:scale-105"
+                  onClick={() => handleCharacterClick(item)}
+                >
+                  {/* メインブロック：ひらがな文字とアイコンを統合 */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-lg py-3 shadow-xl border-2 border-white/30 w-full">
+                    <div className="flex items-center justify-center gap-0.5 w-full">
+                      {/* ひらがな文字 */}
+                      <div
+                        className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg shadow-lg border-2 border-white flex items-center justify-center relative overflow-hidden"
+                        style={{ backgroundColor: item.color }}
+                      >
+                        <div className="text-sm font-bold text-white drop-shadow-lg">
+                          {item.character}
+                        </div>
+                      </div>
+
+                      {/* アイコンと単語 */}
+                      <div className="flex flex-col items-center gap-0.5 w-[40%]">
+                        {item.image && (
+                          <div className="aspect-square w-full max-w-12 min-w-6 flex items-center justify-center overflow-hidden">
+                            <img
+                              src={item.image}
+                              alt={item.word}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[50%] mx-auto bg-white/90 backdrop-blur-sm">
+        <DialogContent className="max-w-[95%] sm:max-w-[50%] mx-auto bg-white/90 backdrop-blur-sm">
           <DialogHeader>
-            <DialogTitle className="text-center text-2xl">
+            <DialogTitle className="text-center text-lg sm:text-2xl">
               「{selectedCharacter}」の れんしゅう
             </DialogTitle>
           </DialogHeader>
@@ -451,8 +571,8 @@ export default function HiraganaScene({
           <div className="space-y-4">
             {/* 大きな文字表示 */}
             <div className="text-center">
-              <div className="flex items-center justify-center gap-4 mb-2">
-                <div className="text-8xl font-bold text-gray-800">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-2">
+                <div className="text-5xl sm:text-8xl font-bold text-gray-800">
                   {selectedCharacter}
                 </div>
                 {selectedCharacter && (
@@ -466,7 +586,7 @@ export default function HiraganaScene({
                             )?.image || ""
                       }
                       alt={`${selectedCharacter}のイラスト`}
-                      className="w-16 h-16 object-contain"
+                      className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
                       onError={(e) => {
                         // 画像が読み込めない場合は非表示にする
                         e.currentTarget.style.display = "none";
@@ -480,12 +600,12 @@ export default function HiraganaScene({
             {/* 書き順説明 */}
             {selectedCharacter &&
               ((strokeOrderData[selectedCharacter] && (
-                <div className="text-center text-sm text-gray-600 mb-4">
+                <div className="text-center text-xs sm:text-sm text-gray-600 mb-4">
                   {strokeOrderData[selectedCharacter].description}
                 </div>
               )) ||
                 (selectedCharacter === "こと" && (
-                  <div className="text-center text-sm text-gray-600 mb-4">
+                  <div className="text-center text-xs sm:text-sm text-gray-600 mb-4">
                     {kotoStrokeData.description}
                   </div>
                 )))}
@@ -493,16 +613,16 @@ export default function HiraganaScene({
             {/* なぞり練習エリア */}
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex justify-center items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-xs sm:text-sm font-medium text-gray-700">
                   なぞって れんしゅう しよう！
                 </span>
               </div>
 
               <canvas
                 ref={canvasRef}
-                width={350}
-                height={200}
-                className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair mx-auto block"
+                width={280}
+                height={160}
+                className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair mx-auto block w-full max-w-[280px] sm:max-w-[350px] sm:w-[350px] sm:h-[200px]"
                 onMouseDown={startTracing}
                 onMouseMove={trace}
                 onMouseUp={stopTracing}
@@ -513,16 +633,16 @@ export default function HiraganaScene({
               />
 
               <div className="flex justify-center gap-2 mt-2">
-                <Button variant="outline" size="sm" onClick={resetStrokes}>
+                <Button variant="outline" size="default" onClick={resetStrokes} className="min-h-[44px] px-4 py-2">
                   <RotateCcw className="h-4 w-4 mr-1" />
                   リセット
                 </Button>
                 <Button
                   variant="default"
-                  size="sm"
+                  size="default"
                   onClick={checkDrawing}
                   disabled={!hasUserDrawing}
-                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300"
+                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 min-h-[44px] px-4 py-2"
                 >
                   これでOK
                 </Button>
@@ -532,7 +652,7 @@ export default function HiraganaScene({
             {/* page.tsxスタイルの花丸表示 */}
             {showHanamaru && (
               <div className="fixed inset-0 flex items-center justify-center z-50 animate-in fade-in duration-300 !mt-0 border-none rounded-sm">
-                <div className="bg-white rounded-2xl p-8 text-center shadow-2xl transform animate-in zoom-in-95 duration-500 relative overflow-hidden">
+                <div className="bg-white rounded-2xl p-4 sm:p-8 text-center shadow-2xl transform animate-in zoom-in-95 duration-500 relative overflow-hidden mx-4">
                   {/* キラキラエフェクト */}
                   <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute top-4 left-4 text-yellow-400 animate-pulse">
@@ -557,8 +677,8 @@ export default function HiraganaScene({
 
                   {/* メイン花丸 */}
                   <div className="relative z-10">
-                    <div className="mb-4 flex justify-center">
-                      <div className="w-24 h-24 text-6xl animate-bounce">
+                    <div className="mb-2 sm:mb-4 flex justify-center">
+                      <div className="w-16 h-16 sm:w-24 sm:h-24 text-4xl sm:text-6xl animate-bounce">
                         <img
                           src="/hanamaru.svg"
                           alt="よくできました"
@@ -566,7 +686,7 @@ export default function HiraganaScene({
                         />
                       </div>
                     </div>
-                    <div className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-3 animate-pulse">
+                    <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3 animate-pulse">
                       よくできました！
                     </div>
                     {/* <div className="text-lg text-gray-600 animate-in slide-in-from-bottom-4 duration-700 delay-300">
