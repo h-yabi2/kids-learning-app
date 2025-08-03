@@ -5,7 +5,7 @@ const audioCache = new Map<string, { audio: ArrayBuffer; timestamp: number }>();
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24時間
 
 // VOICEVOXサーバーのURL
-const VOICEVOX_BASE_URL = "http://localhost:50021";
+const VOICEVOX_BASE_URL = process.env.VOICEVOX_URL || "http://localhost:50021";
 
 // 子供向けキャラクター設定
 const KIDS_FRIENDLY_SPEAKERS = {

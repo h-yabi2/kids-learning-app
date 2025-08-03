@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: voicevox-engine
+    env: docker
+    dockerfilePath: ./voicevox.dockerfile
+    plan: free
+    region: singapore
+    env:
+      - key: VOICEVOX_CORS_POLICY_MODE
+        value: "1"
+    disk:
+      name: voicevox-data
+      mountPath: /app/data
+      sizeGB: 10

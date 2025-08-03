@@ -1,0 +1,11 @@
+{
+  "env": {
+    "VOICEVOX_URL": "@voicevox-url"
+  },
+  "regions": ["nrt1"],
+  "functions": {
+    "app/api/voicevox-tts/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
