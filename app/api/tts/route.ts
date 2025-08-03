@@ -1,42 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import { TextToSpeechClient, protos } from "@google-cloud/text-to-speech";
 
-// Google Cloud Text-to-Speech クライアントを初期化
-let client: TextToSpeechClient;
+// Google Cloud Text-to-Speech クライアントを初期化（シングルトンパターン）
+let client: TextToSpeechClient | null = null;
 
-try {
-  // Base64エンコードされた認証情報をデコード
-  const credentialsBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
-  if (!credentialsBase64) {
-    throw new Error(
-      "GOOGLE_CREDENTIALS_BASE64 environment variable is not set"
-    );
+function getClient(): TextToSpeechClient {
+  if (!client) {
+    try {
+      // Base64エンコードされた認証情報をデコード
+      const credentialsBase64 = process.env.GOOGLE_CREDENTIALS_BASE64;
+      if (!credentialsBase64) {
+        throw new Error(
+          "GOOGLE_CREDENTIALS_BASE64 environment variable is not set"
+        );
+      }
+
+      const credentials = JSON.parse(
+        Buffer.from(credentialsBase64, "base64").toString("utf-8")
+      );
+
+      client = new TextToSpeechClient({
+        credentials: credentials,
+        projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+      });
+    } catch (error) {
+      console.error("Failed to initialize TTS client:", error);
+      throw error;
+    }
   }
-
-  const credentials = JSON.parse(
-    Buffer.from(credentialsBase64, "base64").toString("utf-8")
-  );
-
-  client = new TextToSpeechClient({
-    credentials: credentials,
-    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  });
-} catch (error) {
-  console.error("Failed to initialize TTS client:", error);
-  throw error;
+  return client;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    // 環境変数の確認
-    console.log(
-      "GOOGLE_CREDENTIALS_BASE64:",
-      process.env.GOOGLE_CREDENTIALS_BASE64 ? "Set" : "Not set"
-    );
-    console.log(
-      "GOOGLE_CLOUD_PROJECT_ID:",
-      process.env.GOOGLE_CLOUD_PROJECT_ID
-    );
+    // 環境変数の確認（開発時のみ）
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        "GOOGLE_CREDENTIALS_BASE64:",
+        process.env.GOOGLE_CREDENTIALS_BASE64 ? "Set" : "Not set"
+      );
+      console.log(
+        "GOOGLE_CLOUD_PROJECT_ID:",
+        process.env.GOOGLE_CLOUD_PROJECT_ID
+      );
+    }
 
     const { text, voice = "ja-JP-Neural2-C" } = await request.json();
 
@@ -72,7 +79,8 @@ export async function POST(request: NextRequest) {
       };
 
     // 音声合成を実行
-    const [response] = await client.synthesizeSpeech(request_body);
+    const ttsClient = getClient();
+    const [response] = await ttsClient.synthesizeSpeech(request_body);
 
     if (!response.audioContent) {
       return NextResponse.json(
@@ -84,10 +92,20 @@ export async function POST(request: NextRequest) {
     // Base64エンコードされた音声データを返す
     const audioBase64 = response.audioContent.toString("base64");
 
-    return NextResponse.json({
-      audio: audioBase64,
-      format: "audio/mp3",
-    });
+    // キャッシュヘッダーを追加してレスポンス時間を改善
+    const responseHeaders = {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=3600', // 1時間キャッシュ
+      'ETag': `"${Buffer.from(text + voice).toString('base64')}"`
+    };
+
+    return NextResponse.json(
+      {
+        audio: audioBase64,
+        format: "audio/mp3",
+      },
+      { headers: responseHeaders }
+    );
   } catch (error) {
     console.error("TTS Error:", error);
     return NextResponse.json(

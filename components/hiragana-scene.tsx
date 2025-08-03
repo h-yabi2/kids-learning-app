@@ -71,9 +71,26 @@ export default function HiraganaScene({
     };
   }, []);
 
-  // Text-to-speech function
+  // 音声キャッシュ用のMap
+  const audioCache = useRef(new Map<string, string>()).current;
+
+  // Text-to-speech function (最適化版)
   const speakText = useCallback(async (text: string, lang = "ja-JP") => {
     try {
+      // キャッシュキーを作成
+      const cacheKey = `${text}-ja-JP-Neural2-C`;
+      
+      // キャッシュされた音声があるかチェック
+      if (audioCache.has(cacheKey)) {
+        const cachedUrl = audioCache.get(cacheKey)!;
+        const audio = new Audio(cachedUrl);
+        await audio.play();
+        console.log("☁️ キャッシュから音声を再生");
+        return;
+      }
+
+      // TTS APIを呼び出し
+      const startTime = performance.now();
       const response = await fetch("/api/tts", {
         method: "POST",
         headers: {
@@ -81,7 +98,7 @@ export default function HiraganaScene({
         },
         body: JSON.stringify({
           text: text,
-          voice: "ja-JP-Neural2-C", // 高品質な日本語音声
+          voice: "ja-JP-Neural2-C",
         }),
       });
 
@@ -90,26 +107,33 @@ export default function HiraganaScene({
       }
 
       const data = await response.json();
-      console.log("🎵 TTS Response:", {
-        format: data.format,
-        audioLength: data.audio?.length || 0,
-      });
-
-      // Base64音声データをデコードして再生
+      const apiTime = performance.now() - startTime;
+      
+      // 非同期で音声データを処理
+      const processStartTime = performance.now();
       const audioBlob = new Blob(
         [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
         { type: data.format }
       );
 
       const audioUrl = URL.createObjectURL(audioBlob);
+      const processTime = performance.now() - processStartTime;
+      
+      // キャッシュに保存
+      audioCache.set(cacheKey, audioUrl);
+      
       const audio = new Audio(audioUrl);
-
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl); // メモリリークを防ぐ
-      };
-
+      
+      // 再生開始
       await audio.play();
-      console.log("✅ Google Cloud TTS used successfully");
+      const totalTime = performance.now() - startTime;
+      
+      console.log("🎵 TTS パフォーマンス:", {
+        apiTime: `${apiTime.toFixed(2)}ms`,
+        processTime: `${processTime.toFixed(2)}ms`,
+        totalTime: `${totalTime.toFixed(2)}ms`,
+        cacheSize: audioCache.size
+      });
     } catch (error) {
       console.error("TTS Error:", error);
       console.log("🔄 Falling back to Web Speech API");
@@ -123,7 +147,7 @@ export default function HiraganaScene({
         speechSynthesis.speak(utterance);
       }
     }
-  }, []);
+  }, [audioCache]);
 
   const handleCharacterClick = useCallback(
     (item: HiraganaItem) => {
@@ -165,15 +189,6 @@ export default function HiraganaScene({
     };
   }, [handleKotoClick]);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedCharacter(null);
-    setUserStrokes([]);
-    setShowResult(false);
-    setIsCorrect(false);
-    setShowHanamaru(false);
-    setHasUserDrawing(false);
-  };
 
   const resetStrokes = () => {
     setUserStrokes([]);
@@ -303,7 +318,7 @@ export default function HiraganaScene({
             ? kotoStrokeData.strokes
             : strokeOrderData[selectedCharacter]?.strokes || [];
 
-        strokes.forEach((strokeData, index) => {
+        strokes.forEach((strokeData) => {
           const path = new Path2D(strokeData.path);
           ctx.stroke(path);
 
@@ -382,7 +397,7 @@ export default function HiraganaScene({
             key={colIdx}
             className="flex flex-col gap-2 sm:gap-3 md:gap-4 flex-1"
           >
-            {col.map((item, rowIdx) => (
+            {col.map((item) => (
               <div
                 key={item.id}
                 className="relative cursor-pointer transform transition-all duration-300 hover:scale-105"
