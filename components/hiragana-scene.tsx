@@ -649,39 +649,41 @@ export default function HiraganaScene({
                 </span>
               </div>
 
-              <canvas
-                ref={canvasRef}
-                width={280}
-                height={160}
-                className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair mx-auto block w-full max-w-[280px] sm:max-w-[450px] sm:w-[450px] sm:h-[200px]"
-                onMouseDown={startTracing}
-                onMouseMove={trace}
-                onMouseUp={stopTracing}
-                onMouseLeave={stopTracing}
-                onTouchStart={startTracing}
-                onTouchMove={trace}
-                onTouchEnd={stopTracing}
-              />
+              <div className="flex justify-end items-center gap-4">
+                <canvas
+                  ref={canvasRef}
+                  width={280}
+                  height={160}
+                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[280px] sm:max-w-[500px] sm:w-[500px] sm:h-[200px]"
+                  onMouseDown={startTracing}
+                  onMouseMove={trace}
+                  onMouseUp={stopTracing}
+                  onMouseLeave={stopTracing}
+                  onTouchStart={startTracing}
+                  onTouchMove={trace}
+                  onTouchEnd={stopTracing}
+                />
 
-              <div className="flex justify-center gap-2 mt-2">
-                <Button
-                  variant="outline"
-                  size="default"
-                  onClick={resetStrokes}
-                  className="min-h-[44px] px-4 py-2"
-                >
-                  <RotateCcw className="h-4 w-4 mr-1" />
-                  リセット
-                </Button>
-                <Button
-                  variant="default"
-                  size="default"
-                  onClick={checkDrawing}
-                  disabled={!hasUserDrawing}
-                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 min-h-[44px] px-4 py-2"
-                >
-                  これでOK
-                </Button>
+                <div className="flex flex-col justify-center gap-2 mt-2">
+                  <Button
+                    variant="outline"
+                    size="default"
+                    onClick={resetStrokes}
+                    className="min-h-[44px] px-4 py-2"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-1" />
+                    リセット
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="default"
+                    onClick={checkDrawing}
+                    disabled={!hasUserDrawing}
+                    className="bg-green-500 hover:bg-green-600 disabled:bg-gray-300 min-h-[44px] px-4 py-2"
+                  >
+                    これでOK
+                  </Button>
+                </div>
               </div>
             </div>
 
