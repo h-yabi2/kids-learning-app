@@ -266,10 +266,13 @@ export default function HiraganaScene({
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
     const x =
-      "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+      ("touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left) * scaleX;
     const y =
-      "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+      ("touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top) * scaleY;
 
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -293,10 +296,13 @@ export default function HiraganaScene({
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
     const x =
-      "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+      ("touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left) * scaleX;
     const y =
-      "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+      ("touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top) * scaleY;
 
     const ctx = canvas.getContext("2d");
     if (ctx) {
