@@ -77,79 +77,82 @@ export default function HiraganaScene({
   const audioCache = useRef(new Map<string, string>()).current;
 
   // Text-to-speech function (最適化版)
-  const speakText = useCallback(async (text: string, lang = "ja-JP") => {
-    try {
-      // キャッシュキーを作成
-      const cacheKey = `${text}-ja-JP-Neural2-C`;
-      
-      // キャッシュされた音声があるかチェック
-      if (audioCache.has(cacheKey)) {
-        const cachedUrl = audioCache.get(cacheKey)!;
-        const audio = new Audio(cachedUrl);
+  const speakText = useCallback(
+    async (text: string, lang = "ja-JP") => {
+      try {
+        // キャッシュキーを作成
+        const cacheKey = `${text}-ja-JP-Neural2-C`;
+
+        // キャッシュされた音声があるかチェック
+        if (audioCache.has(cacheKey)) {
+          const cachedUrl = audioCache.get(cacheKey)!;
+          const audio = new Audio(cachedUrl);
+          await audio.play();
+          console.log("☁️ キャッシュから音声を再生");
+          return;
+        }
+
+        // TTS APIを呼び出し
+        const startTime = performance.now();
+        const response = await fetch("/api/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: text,
+            voice: "ja-JP-Neural2-C",
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("TTS API request failed");
+        }
+
+        const data = await response.json();
+        const apiTime = performance.now() - startTime;
+
+        // 非同期で音声データを処理
+        const processStartTime = performance.now();
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
+          { type: data.format }
+        );
+
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const processTime = performance.now() - processStartTime;
+
+        // キャッシュに保存
+        audioCache.set(cacheKey, audioUrl);
+
+        const audio = new Audio(audioUrl);
+
+        // 再生開始
         await audio.play();
-        console.log("☁️ キャッシュから音声を再生");
-        return;
+        const totalTime = performance.now() - startTime;
+
+        console.log("🎵 TTS パフォーマンス:", {
+          apiTime: `${apiTime.toFixed(2)}ms`,
+          processTime: `${processTime.toFixed(2)}ms`,
+          totalTime: `${totalTime.toFixed(2)}ms`,
+          cacheSize: audioCache.size,
+        });
+      } catch (error) {
+        console.error("TTS Error:", error);
+        console.log("🔄 Falling back to Web Speech API");
+        // フォールバック: Web Speech APIを使用
+        if ("speechSynthesis" in window) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang;
+          utterance.rate = 0.7;
+          utterance.pitch = 1.2;
+          utterance.volume = 0.9;
+          speechSynthesis.speak(utterance);
+        }
       }
-
-      // TTS APIを呼び出し
-      const startTime = performance.now();
-      const response = await fetch("/api/tts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: text,
-          voice: "ja-JP-Neural2-C",
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("TTS API request failed");
-      }
-
-      const data = await response.json();
-      const apiTime = performance.now() - startTime;
-      
-      // 非同期で音声データを処理
-      const processStartTime = performance.now();
-      const audioBlob = new Blob(
-        [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
-        { type: data.format }
-      );
-
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const processTime = performance.now() - processStartTime;
-      
-      // キャッシュに保存
-      audioCache.set(cacheKey, audioUrl);
-      
-      const audio = new Audio(audioUrl);
-      
-      // 再生開始
-      await audio.play();
-      const totalTime = performance.now() - startTime;
-      
-      console.log("🎵 TTS パフォーマンス:", {
-        apiTime: `${apiTime.toFixed(2)}ms`,
-        processTime: `${processTime.toFixed(2)}ms`,
-        totalTime: `${totalTime.toFixed(2)}ms`,
-        cacheSize: audioCache.size
-      });
-    } catch (error) {
-      console.error("TTS Error:", error);
-      console.log("🔄 Falling back to Web Speech API");
-      // フォールバック: Web Speech APIを使用
-      if ("speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 0.7;
-        utterance.pitch = 1.2;
-        utterance.volume = 0.9;
-        speechSynthesis.speak(utterance);
-      }
-    }
-  }, [audioCache]);
+    },
+    [audioCache]
+  );
 
   const handleCharacterClick = useCallback(
     (item: HiraganaItem) => {
@@ -207,7 +210,6 @@ export default function HiraganaScene({
       delete (window as any).triggerAkariClick;
     };
   }, [handleKotoClick, handleAkariClick]);
-
 
   const resetStrokes = () => {
     setUserStrokes([]);
@@ -325,12 +327,12 @@ export default function HiraganaScene({
         canvas.width = isSmallScreen ? 280 : 350;
         canvas.height = isSmallScreen ? 160 : 200;
       };
-      
+
       updateCanvasSize();
-      window.addEventListener('resize', updateCanvasSize);
-      
+      window.addEventListener("resize", updateCanvasSize);
+
       return () => {
-        window.removeEventListener('resize', updateCanvasSize);
+        window.removeEventListener("resize", updateCanvasSize);
       };
     }
   }, [selectedCharacter]);
@@ -488,10 +490,7 @@ export default function HiraganaScene({
         {/* 上段: あ行〜な行 */}
         <div className="flex flex-row-reverse justify-center gap-1">
           {topGroupRows.map((col, colIdx) => (
-            <div
-              key={colIdx}
-              className="flex flex-col gap-2 flex-1"
-            >
+            <div key={colIdx} className="flex flex-col gap-2 flex-1">
               {col.map((item) => (
                 <div
                   key={item.id}
@@ -534,10 +533,7 @@ export default function HiraganaScene({
         {/* 下段: は行〜わ行 */}
         <div className="flex flex-row-reverse justify-center gap-1 pt-4">
           {bottomGroupRows.map((col, colIdx) => (
-            <div
-              key={colIdx}
-              className="flex flex-col gap-2 flex-1"
-            >
+            <div key={colIdx} className="flex flex-col gap-2 flex-1">
               {col.map((item) => (
                 <div
                   key={item.id}
@@ -580,7 +576,7 @@ export default function HiraganaScene({
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[95%] sm:max-w-[50%] mx-auto bg-white/90 backdrop-blur-sm">
+        <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm">
           <DialogHeader>
             <DialogTitle className="text-center text-lg sm:text-2xl">
               「{selectedCharacter}」の れんしゅう
@@ -607,7 +603,7 @@ export default function HiraganaScene({
                             )?.image || ""
                       }
                       alt={`${selectedCharacter}のイラスト`}
-                      className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                      className="w-24 h-24 sm:w-24 sm:h-24 object-contain"
                       onError={(e) => {
                         // 画像が読み込めない場合は非表示にする
                         e.currentTarget.style.display = "none";
@@ -643,7 +639,7 @@ export default function HiraganaScene({
                 ref={canvasRef}
                 width={280}
                 height={160}
-                className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair mx-auto block w-full max-w-[280px] sm:max-w-[350px] sm:w-[350px] sm:h-[200px]"
+                className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair mx-auto block w-full max-w-[280px] sm:max-w-[450px] sm:w-[450px] sm:h-[200px]"
                 onMouseDown={startTracing}
                 onMouseMove={trace}
                 onMouseUp={stopTracing}
@@ -654,7 +650,12 @@ export default function HiraganaScene({
               />
 
               <div className="flex justify-center gap-2 mt-2">
-                <Button variant="outline" size="default" onClick={resetStrokes} className="min-h-[44px] px-4 py-2">
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={resetStrokes}
+                  className="min-h-[44px] px-4 py-2"
+                >
                   <RotateCcw className="h-4 w-4 mr-1" />
                   リセット
                 </Button>
