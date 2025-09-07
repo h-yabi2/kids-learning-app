@@ -273,7 +273,7 @@ export default function ColorLearningApp() {
               こどもまなびアプリ
             </h1>
           </div>
-          
+
           {/* 動的タイトル表示 */}
           <div className="text-right">
             <h2 className="text-3xl font-bold text-gray-800 mb-1 select-none">
@@ -284,7 +284,7 @@ export default function ColorLearningApp() {
             </p>
           </div>
         </div>
-        
+
         {/* タブナビゲーション */}
         <div className="mt-4 flex justify-center space-x-2">
           {Object.entries(tabTitles).map(([tabId, tabInfo]) => (
@@ -300,7 +300,6 @@ export default function ColorLearningApp() {
               {tabInfo.title}
             </button>
           ))}
-        </div>
         </div>
       </div>
 
