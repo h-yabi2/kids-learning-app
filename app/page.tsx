@@ -97,6 +97,30 @@ export default function ColorLearningApp() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const popupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // タブごとのタイトル情報
+  const tabTitles = {
+    hiragana: {
+      title: "ひらがな",
+      description: "ひらがなをタップして、ことばをおぼえよう！"
+    },
+    colors: {
+      title: "いろ",
+      description: "いろをタップして、ことばをおぼえよう！"
+    },
+    park: {
+      title: "こうえん",
+      description: "こうえんのものをタップして、ことばをおぼえよう！"
+    },
+    numbers: {
+      title: "すうじ",
+      description: "すうじをタップして、ことばをおぼえよう！"
+    },
+    instruments: {
+      title: "がっき",
+      description: "がっきをタップして、ことばをおぼえよう！"
+    }
+  };
+
   // Text-to-speech function
   const speakText = (text: string, lang = "ja-JP") => {
     if ("speechSynthesis" in window) {
@@ -249,11 +273,39 @@ export default function ColorLearningApp() {
               こどもまなびアプリ
             </h1>
           </div>
+          
+          {/* 動的タイトル表示 */}
+          <div className="text-right">
+            <h2 className="text-3xl font-bold text-gray-800 mb-1 select-none">
+              {tabTitles[activeTab as keyof typeof tabTitles]?.title || "ひらがな"}
+            </h2>
+            <p className="text-gray-600 text-sm select-none">
+              {tabTitles[activeTab as keyof typeof tabTitles]?.description || "ひらがなをタップして、ことばをおぼえよう！"}
+            </p>
+          </div>
+        </div>
+        
+        {/* タブナビゲーション */}
+        <div className="mt-4 flex justify-center space-x-2">
+          {Object.entries(tabTitles).map(([tabId, tabInfo]) => (
+            <button
+              key={tabId}
+              onClick={() => handleTabClick(tabId)}
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                activeTab === tabId
+                  ? "bg-blue-500 text-white shadow-md"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {tabInfo.title}
+            </button>
+          ))}
+        </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-140px)] p-6 select-none">
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-6 select-none">
         <Card className="bg-transparent shadow-none border-none w-full">
           {activeTab === "hiragana" && (
             <HiraganaTab onHiraganaClick={handleHiraganaClick} />

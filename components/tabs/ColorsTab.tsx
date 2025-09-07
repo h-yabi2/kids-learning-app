@@ -51,12 +51,6 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ crayons, onCrayonClick }) => {
 
   return (
     <>
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">いろ</h2>
-        <p className="text-gray-600">
-          クレヨンをタップして、いろのなまえをおぼえよう！
-        </p>
-      </div>
       <div className="bg-gradient-to-b from-amber-50 to-amber-100 rounded-2xl p-8 border-4 border-amber-200 shadow-inner">
         <div className="grid grid-cols-7 gap-4 justify-items-center">
           {crayons.map((crayon) => (
