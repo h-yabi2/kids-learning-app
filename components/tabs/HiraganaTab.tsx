@@ -38,14 +38,8 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
           ひらがなをタップして、ことばをおぼえよう！
         </p>
       </div>
-      <HiraganaScene onHiraganaClick={onHiraganaClick} kotoItem={kotoItem} akariItem={akariItem} />
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-500">
-          ひらがなをタップすると、ことばがきこえるよ！
-        </p>
-      </div>
       {/* 「こと」と「あかり」の特別表示 */}
-      <div className="mt-6 text-center">
+      <div className="mb-6 text-center">
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {/* 「こと」の表示 */}
           <div
@@ -112,6 +106,12 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
           </div>
         </div>
       </div>
+
+      <HiraganaScene
+        onHiraganaClick={onHiraganaClick}
+        kotoItem={kotoItem}
+        akariItem={akariItem}
+      />
     </>
   );
 };
