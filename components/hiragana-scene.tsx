@@ -268,11 +268,15 @@ export default function HiraganaScene({
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    
+
     const x =
-      ("touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left) * scaleX;
+      ("touches" in e
+        ? e.touches[0].clientX - rect.left
+        : e.clientX - rect.left) * scaleX;
     const y =
-      ("touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top) * scaleY;
+      ("touches" in e
+        ? e.touches[0].clientY - rect.top
+        : e.clientY - rect.top) * scaleY;
 
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -298,11 +302,15 @@ export default function HiraganaScene({
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    
+
     const x =
-      ("touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left) * scaleX;
+      ("touches" in e
+        ? e.touches[0].clientX - rect.left
+        : e.clientX - rect.left) * scaleX;
     const y =
-      ("touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top) * scaleY;
+      ("touches" in e
+        ? e.touches[0].clientY - rect.top
+        : e.clientY - rect.top) * scaleY;
 
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -582,7 +590,7 @@ export default function HiraganaScene({
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm">
+        <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm select-none">
           <DialogHeader>
             <DialogTitle className="text-center text-lg sm:text-2xl">
               「{selectedCharacter}」の れんしゅう

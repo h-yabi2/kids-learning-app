@@ -253,7 +253,7 @@ export default function ColorLearningApp() {
       </div>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center min-h-[calc(100vh-140px)] p-6">
+      <div className="flex items-center justify-center min-h-[calc(100vh-140px)] p-6 select-none">
         <Card className="bg-transparent shadow-none border-none w-full">
           {activeTab === "hiragana" && (
             <HiraganaTab onHiraganaClick={handleHiraganaClick} />
