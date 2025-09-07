@@ -76,6 +76,30 @@ export default function HiraganaScene({
   // 音声キャッシュ用のMap
   const audioCache = useRef(new Map<string, string>()).current;
 
+  // クリック効果音を生成する関数
+  const playClickSound = useCallback(() => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // クリック音の設定
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz
+      oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1); // 400Hzに下がる
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // 音量
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1); // フェードアウト
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (error) {
+      console.log("効果音の再生に失敗しました:", error);
+    }
+  }, []);
+
   // Text-to-speech function (最適化版)
   const speakText = useCallback(
     async (text: string, lang = "ja-JP") => {
@@ -157,6 +181,7 @@ export default function HiraganaScene({
   const handleCharacterClick = useCallback(
     (item: HiraganaItem) => {
       console.log("🎬 handleCharacterClickが呼ばれました:", item);
+      playClickSound(); // クリック効果音を再生
       setSelectedCharacter(item.character);
       setIsModalOpen(true);
       setUserStrokes([]);
@@ -168,7 +193,7 @@ export default function HiraganaScene({
       onHiraganaClick(item);
       console.log("✅ ダイアログを開きました");
     },
-    [onHiraganaClick, speakText]
+    [onHiraganaClick, speakText, playClickSound]
   );
 
   const handleKotoClick = useCallback(() => {
