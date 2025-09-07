@@ -79,20 +79,27 @@ export default function HiraganaScene({
   // クリック効果音を生成する関数
   const playClickSound = useCallback(() => {
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       // クリック音の設定
       oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz
-      oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1); // 400Hzに下がる
-      
+      oscillator.frequency.exponentialRampToValueAtTime(
+        400,
+        audioContext.currentTime + 0.1
+      ); // 400Hzに下がる
+
       gainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // 音量
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1); // フェードアウト
-      
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1
+      ); // フェードアウト
+
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.1);
     } catch (error) {
@@ -679,7 +686,7 @@ export default function HiraganaScene({
                   ref={canvasRef}
                   width={280}
                   height={160}
-                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[280px] sm:max-w-[500px] sm:w-[500px] sm:h-[200px]"
+                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[500px] sm:w-[500px] sm:h-[200px]"
                   onMouseDown={startTracing}
                   onMouseMove={trace}
                   onMouseUp={stopTracing}
