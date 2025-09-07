@@ -101,24 +101,24 @@ export default function ColorLearningApp() {
   const tabTitles = {
     hiragana: {
       title: "ひらがな",
-      description: "ひらがなをタップして、ことばをおぼえよう！"
+      description: "ひらがなをタップして、ことばをおぼえよう！",
     },
     colors: {
       title: "いろ",
-      description: "いろをタップして、ことばをおぼえよう！"
+      description: "いろをタップして、ことばをおぼえよう！",
     },
     park: {
       title: "こうえん",
-      description: "こうえんのものをタップして、ことばをおぼえよう！"
+      description: "こうえんのものをタップして、ことばをおぼえよう！",
     },
     numbers: {
       title: "すうじ",
-      description: "すうじをタップして、ことばをおぼえよう！"
+      description: "すうじをタップして、ことばをおぼえよう！",
     },
     instruments: {
       title: "がっき",
-      description: "がっきをタップして、ことばをおぼえよう！"
-    }
+      description: "がっきをタップして、ことばをおぼえよう！",
+    },
   };
 
   // Text-to-speech function
@@ -277,16 +277,18 @@ export default function ColorLearningApp() {
           {/* 動的タイトル表示 */}
           <div className="text-right">
             <h2 className="text-3xl font-bold text-gray-800 mb-1 select-none">
-              {tabTitles[activeTab as keyof typeof tabTitles]?.title || "ひらがな"}
+              {tabTitles[activeTab as keyof typeof tabTitles]?.title ||
+                "ひらがな"}
             </h2>
             <p className="text-gray-600 text-sm select-none">
-              {tabTitles[activeTab as keyof typeof tabTitles]?.description || "ひらがなをタップして、ことばをおぼえよう！"}
+              {tabTitles[activeTab as keyof typeof tabTitles]?.description ||
+                "ひらがなをタップして、ことばをおぼえよう！"}
             </p>
           </div>
         </div>
 
         {/* タブナビゲーション */}
-        <div className="mt-4 flex justify-center space-x-2">
+        {/* <div className="mt-4 flex justify-center space-x-2">
           {Object.entries(tabTitles).map(([tabId, tabInfo]) => (
             <button
               key={tabId}
@@ -300,7 +302,7 @@ export default function ColorLearningApp() {
               {tabInfo.title}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Main Content */}
