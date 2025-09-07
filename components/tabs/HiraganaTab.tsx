@@ -33,20 +33,27 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
   // クリック効果音を生成する関数
   const playClickSound = useCallback(() => {
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
-      
+
       // クリック音の設定
       oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz
-      oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1); // 400Hzに下がる
-      
+      oscillator.frequency.exponentialRampToValueAtTime(
+        400,
+        audioContext.currentTime + 0.1
+      ); // 400Hzに下がる
+
       gainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // 音量
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1); // フェードアウト
-      
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1
+      ); // フェードアウト
+
       oscillator.start(audioContext.currentTime);
       oscillator.stop(audioContext.currentTime + 0.1);
     } catch (error) {
@@ -63,7 +70,7 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
         </p>
       </div>
       {/* 「こと」と「あかり」の特別表示 */}
-      <div className="mb-6 text-center">
+      <div className="mb-8 text-center">
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {/* 「こと」の表示 */}
           <div
