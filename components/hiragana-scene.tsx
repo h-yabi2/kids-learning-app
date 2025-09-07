@@ -18,12 +18,14 @@ import {
 interface HiraganaSceneProps {
   onHiraganaClick: (item: HiraganaItem) => void;
   kotoItem?: HiraganaItem;
+  akariItem?: HiraganaItem;
   onKotoClick?: () => void;
 }
 
 export default function HiraganaScene({
   onHiraganaClick,
   kotoItem,
+  akariItem,
   onKotoClick,
 }: HiraganaSceneProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
@@ -176,7 +178,17 @@ export default function HiraganaScene({
     }
   }, [kotoItem, handleCharacterClick]);
 
-  // 外部からの「こと」クリックを処理
+  const handleAkariClick = useCallback(() => {
+    console.log("🎯 handleAkariClickが呼ばれました");
+    if (akariItem) {
+      console.log("📝 akariItem:", akariItem);
+      handleCharacterClick(akariItem);
+    } else {
+      console.log("❌ akariItemがありません");
+    }
+  }, [akariItem, handleCharacterClick]);
+
+  // 外部からの「こと」と「あかり」クリックを処理
   useEffect(() => {
     // グローバル関数としてhandleKotoClickを公開
     (window as any).triggerKotoClick = () => {
@@ -184,10 +196,17 @@ export default function HiraganaScene({
       handleKotoClick();
     };
 
+    // グローバル関数としてhandleAkariClickを公開
+    (window as any).triggerAkariClick = () => {
+      console.log("🌐 グローバルtriggerAkariClickが呼ばれました");
+      handleAkariClick();
+    };
+
     return () => {
       delete (window as any).triggerKotoClick;
+      delete (window as any).triggerAkariClick;
     };
-  }, [handleKotoClick]);
+  }, [handleKotoClick, handleAkariClick]);
 
 
   const resetStrokes = () => {
@@ -581,6 +600,8 @@ export default function HiraganaScene({
                       src={
                         selectedCharacter === "こと"
                           ? "/images/koto.png"
+                          : selectedCharacter === "あかり"
+                          ? "/images/akari.png"
                           : hiraganaData.find(
                               (item) => item.character === selectedCharacter
                             )?.image || ""
