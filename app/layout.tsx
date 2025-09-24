@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-noto-sans-jp",
+});
 
 export const metadata: Metadata = {
   title: "ひらがなおべんきょう",
@@ -30,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body className={notoSansJP.variable}>{children}</body>
     </html>
   );
 }
