@@ -472,7 +472,7 @@ export default function HiraganaScene({
         ctx.setLineDash([5, 5]);
 
         const strokes =
-          selectedCharacter === "こと"
+          selectedCharacter === "やびく こと"
             ? kotoStrokeData.strokes
             : strokeOrderData[selectedCharacter]?.strokes || [];
 
@@ -712,7 +712,7 @@ export default function HiraganaScene({
                   <div className="flex-shrink-0">
                     <img
                       src={
-                        selectedCharacter === "こと"
+                        selectedCharacter === "やびく こと"
                           ? "/images/koto.png"
                           : selectedCharacter === "あかり"
                           ? "/images/akari.png"
@@ -747,7 +747,7 @@ export default function HiraganaScene({
                   {strokeOrderData[selectedCharacter].description}
                 </div>
               )) ||
-                (selectedCharacter === "こと" && (
+                (selectedCharacter === "やびく こと" && (
                   <div className="text-center text-xs sm:text-sm text-gray-600 mb-4">
                     {kotoStrokeData.description}
                   </div>

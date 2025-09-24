@@ -9,9 +9,9 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
   // 「こと」の特別データ
   const kotoItem = {
     id: "koto",
-    character: "こと",
-    word: "こと",
-    reading: "こと",
+    character: "やびく こと",
+    word: "やびく こと",
+    reading: "やびく こと",
     color: "#FF6B9D", // ピンク系
     row: "特別",
     image: "/images/koto.png",
