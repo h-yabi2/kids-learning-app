@@ -313,7 +313,14 @@ export default function HiraganaScene({
       delete (window as any).triggerMitsukiClick;
       delete (window as any).triggerYattyanClick;
     };
-  }, [handleKotoClick, handleAkariClick, handleAyumuClick, handleMionaClick, handleMitsukiClick, handleYattyanClick]);
+  }, [
+    handleKotoClick,
+    handleAkariClick,
+    handleAyumuClick,
+    handleMionaClick,
+    handleMitsukiClick,
+    handleYattyanClick,
+  ]);
 
   const resetStrokes = () => {
     setUserStrokes([]);
@@ -766,7 +773,7 @@ export default function HiraganaScene({
                   ref={canvasRef}
                   width={280}
                   height={160}
-                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[500px] sm:w-[500px] sm:h-[200px]"
+                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[600px] sm:w-[600px] sm:h-[200px]"
                   onMouseDown={startTracing}
                   onMouseMove={trace}
                   onMouseUp={stopTracing}
