@@ -768,7 +768,7 @@ export default function HiraganaScene({
                 </span>
               </div>
 
-              <div className="flex justify-end items-center gap-4">
+              <div className="flex justify-center items-center gap-4">
                 <canvas
                   ref={canvasRef}
                   width={280}
