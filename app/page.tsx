@@ -9,6 +9,7 @@ import ColorsTab from "@/components/tabs/ColorsTab";
 import ParkTab from "@/components/tabs/ParkTab";
 import NumbersTab from "@/components/tabs/NumbersTab";
 import InstrumentsTab from "@/components/tabs/InstrumentsTab";
+import FriendsTab from "@/components/tabs/FriendsTab";
 
 interface Crayon {
   id: string;
@@ -118,6 +119,10 @@ export default function ColorLearningApp() {
     instruments: {
       title: "がっき",
       description: "がっきをタップして、ことばをおぼえよう！",
+    },
+    friends: {
+      title: "ともだち",
+      description: "ともだちをタップして、なまえをおぼえよう！",
     },
   };
 
@@ -260,6 +265,24 @@ export default function ColorLearningApp() {
     // 音声読み上げは hiragana-scene.tsx 内で行われるため、ここでは何もしない
   };
 
+  const handleFriendClick = (friend: any) => {
+    setSelectedCrayon({
+      id: friend.id ?? "friend",
+      nameJapanese: friend.nameJapanese,
+      name: friend.name,
+      color: "#ff69b4",
+      usage: 0,
+    });
+    setShowPopup(true);
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    popupTimeoutRef.current = setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    speakText(friend.nameJapanese);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
       {/* Header */}
@@ -322,6 +345,9 @@ export default function ColorLearningApp() {
           )}
           {activeTab === "instruments" && (
             <InstrumentsTab onInstrumentClick={handleInstrumentClick} />
+          )}
+          {activeTab === "friends" && (
+            <FriendsTab onFriendClick={handleFriendClick} />
           )}
         </Card>
       </div>

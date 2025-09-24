@@ -28,6 +28,50 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
     image: "/images/akari.png",
   };
 
+  // 「あゆむ」の特別データ
+  const ayumuItem = {
+    id: "ayumu",
+    character: "あゆむ",
+    word: "あゆむ",
+    reading: "あゆむ",
+    color: "#FF6B9D", // ピンク系
+    row: "特別",
+    image: "/images/ayumu.png",
+  };
+
+  // 「みおな」の特別データ
+  const mionaItem = {
+    id: "miona",
+    character: "みおな",
+    word: "みおな",
+    reading: "みおな",
+    color: "#9C27B0", // パープル系
+    row: "特別",
+    image: "/images/miona.png",
+  };
+
+  // 「みつき」の特別データ
+  const mitsukiItem = {
+    id: "mitsuki",
+    character: "みつき",
+    word: "みつき",
+    reading: "みつき",
+    color: "#FF9800", // オレンジ系
+    row: "特別",
+    image: "/images/mitsuki.png",
+  };
+
+  // 「やっちゃん」の特別データ
+  const yattyanItem = {
+    id: "yattyan",
+    character: "やっちゃん",
+    word: "やっちゃん",
+    reading: "やっちゃん",
+    color: "#4CAF50", // グリーン系
+    row: "特別",
+    image: "/images/yattyan.png",
+  };
+
   const hiraganaSceneRef = useRef<any>(null);
 
   // クリック効果音を生成する関数
@@ -63,29 +107,22 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
 
   return (
     <>
-      {/* 「こと」と「あかり」の特別表示 */}
+      {/* 友達キャラクターの特別表示 */}
       <div className="mb-8 text-center">
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 justify-center items-center">
           {/* 「こと」の表示 */}
           <div
-            className="inline-block bg-gradient-to-r from-pink-400 to-purple-500 rounded-2xl p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-pink-400 to-purple-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
             onClick={() => {
               console.log("🔵 「こと」がクリックされました");
-              playClickSound(); // クリック効果音を再生
+              playClickSound();
               onHiraganaClick(kotoItem);
-              // グローバル関数を呼び出してダイアログを開く
-              console.log("📞 グローバルtriggerKotoClickを呼び出します");
               if ((window as any).triggerKotoClick) {
                 (window as any).triggerKotoClick();
-              } else {
-                console.log("❌ グローバルtriggerKotoClickが見つかりません");
               }
             }}
           >
-            <div className="flex items-center justify-center gap-3">
-              <div className="text-2xl sm:text-3xl font-bold text-white">
-                {kotoItem.character}
-              </div>
+            <div className="flex items-center justify-center gap-2">
               <div className="w-12 h-12 sm:w-16 sm:h-16">
                 <img
                   src={kotoItem.image}
@@ -96,29 +133,25 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
                   }}
                 />
               </div>
+              <div className="text-lg sm:text-xl font-bold text-white">
+                {kotoItem.character}
+              </div>
             </div>
           </div>
 
           {/* 「あかり」の表示 */}
           <div
-            className="inline-block bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
             onClick={() => {
               console.log("🔵 「あかり」がクリックされました");
-              playClickSound(); // クリック効果音を再生
+              playClickSound();
               onHiraganaClick(akariItem);
-              // グローバル関数を呼び出してダイアログを開く
-              console.log("📞 グローバルtriggerAkariClickを呼び出します");
               if ((window as any).triggerAkariClick) {
                 (window as any).triggerAkariClick();
-              } else {
-                console.log("❌ グローバルtriggerAkariClickが見つかりません");
               }
             }}
           >
-            <div className="flex items-center justify-center gap-3">
-              <div className="text-2xl sm:text-3xl font-bold text-white">
-                {akariItem.character}
-              </div>
+            <div className="flex items-center justify-center gap-2">
               <div className="w-12 h-12 sm:w-16 sm:h-16">
                 <img
                   src={akariItem.image}
@@ -129,6 +162,125 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
                   }}
                 />
               </div>
+              <div className="text-lg sm:text-xl font-bold text-white">
+                {akariItem.character}
+              </div>
+            </div>
+          </div>
+
+          {/* 「あゆむ」の表示 */}
+          <div
+            className="bg-gradient-to-r from-pink-400 to-rose-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            onClick={() => {
+              console.log("🔵 「あゆむ」がクリックされました");
+              playClickSound();
+              onHiraganaClick(ayumuItem);
+              if ((window as any).triggerAyumuClick) {
+                (window as any).triggerAyumuClick();
+              }
+            }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-12 h-12 sm:w-16 sm:h-16">
+                <img
+                  src={ayumuItem.image}
+                  alt={ayumuItem.word}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+              <div className="text-lg sm:text-xl font-bold text-white">
+                {ayumuItem.character}
+              </div>
+            </div>
+          </div>
+
+          {/* 「みおな」の表示 */}
+          <div
+            className="bg-gradient-to-r from-purple-400 to-violet-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            onClick={() => {
+              console.log("🔵 「みおな」がクリックされました");
+              playClickSound();
+              onHiraganaClick(mionaItem);
+              if ((window as any).triggerMionaClick) {
+                (window as any).triggerMionaClick();
+              }
+            }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-12 h-12 sm:w-16 sm:h-16">
+                <img
+                  src={mionaItem.image}
+                  alt={mionaItem.word}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+              <div className="text-lg sm:text-xl font-bold text-white">
+                {mionaItem.character}
+              </div>
+            </div>
+          </div>
+
+          {/* 「みつき」の表示 */}
+          <div
+            className="bg-gradient-to-r from-orange-400 to-amber-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            onClick={() => {
+              console.log("🔵 「みつき」がクリックされました");
+              playClickSound();
+              onHiraganaClick(mitsukiItem);
+              if ((window as any).triggerMitsukiClick) {
+                (window as any).triggerMitsukiClick();
+              }
+            }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-12 h-12 sm:w-16 sm:h-16">
+                <img
+                  src={mitsukiItem.image}
+                  alt={mitsukiItem.word}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+              <div className="text-lg sm:text-xl font-bold text-white">
+                {mitsukiItem.character}
+              </div>
+            </div>
+          </div>
+
+          {/* 「やっちゃん」の表示 */}
+          <div
+            className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            onClick={() => {
+              console.log("🔵 「やっちゃん」がクリックされました");
+              playClickSound();
+              onHiraganaClick(yattyanItem);
+              if ((window as any).triggerYattyanClick) {
+                (window as any).triggerYattyanClick();
+              }
+            }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-12 h-12 sm:w-16 sm:h-16">
+                <img
+                  src={yattyanItem.image}
+                  alt={yattyanItem.word}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+              <div className="text-lg sm:text-xl font-bold text-white">
+                {yattyanItem.character}
+              </div>
             </div>
           </div>
         </div>
@@ -138,6 +290,10 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
         onHiraganaClick={onHiraganaClick}
         kotoItem={kotoItem}
         akariItem={akariItem}
+        ayumuItem={ayumuItem}
+        mionaItem={mionaItem}
+        mitsukiItem={mitsukiItem}
+        yattyanItem={yattyanItem}
       />
     </>
   );

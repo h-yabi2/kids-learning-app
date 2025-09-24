@@ -19,6 +19,10 @@ interface HiraganaSceneProps {
   onHiraganaClick: (item: HiraganaItem) => void;
   kotoItem?: HiraganaItem;
   akariItem?: HiraganaItem;
+  ayumuItem?: HiraganaItem;
+  mionaItem?: HiraganaItem;
+  mitsukiItem?: HiraganaItem;
+  yattyanItem?: HiraganaItem;
   onKotoClick?: () => void;
 }
 
@@ -26,6 +30,10 @@ export default function HiraganaScene({
   onHiraganaClick,
   kotoItem,
   akariItem,
+  ayumuItem,
+  mionaItem,
+  mitsukiItem,
+  yattyanItem,
   onKotoClick,
 }: HiraganaSceneProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
@@ -223,7 +231,47 @@ export default function HiraganaScene({
     }
   }, [akariItem, handleCharacterClick]);
 
-  // 外部からの「こと」と「あかり」クリックを処理
+  const handleAyumuClick = useCallback(() => {
+    console.log("🎯 handleAyumuClickが呼ばれました");
+    if (ayumuItem) {
+      console.log("📝 ayumuItem:", ayumuItem);
+      handleCharacterClick(ayumuItem);
+    } else {
+      console.log("❌ ayumuItemがありません");
+    }
+  }, [ayumuItem, handleCharacterClick]);
+
+  const handleMionaClick = useCallback(() => {
+    console.log("🎯 handleMionaClickが呼ばれました");
+    if (mionaItem) {
+      console.log("📝 mionaItem:", mionaItem);
+      handleCharacterClick(mionaItem);
+    } else {
+      console.log("❌ mionaItemがありません");
+    }
+  }, [mionaItem, handleCharacterClick]);
+
+  const handleMitsukiClick = useCallback(() => {
+    console.log("🎯 handleMitsukiClickが呼ばれました");
+    if (mitsukiItem) {
+      console.log("📝 mitsukiItem:", mitsukiItem);
+      handleCharacterClick(mitsukiItem);
+    } else {
+      console.log("❌ mitsukiItemがありません");
+    }
+  }, [mitsukiItem, handleCharacterClick]);
+
+  const handleYattyanClick = useCallback(() => {
+    console.log("🎯 handleYattyanClickが呼ばれました");
+    if (yattyanItem) {
+      console.log("📝 yattyanItem:", yattyanItem);
+      handleCharacterClick(yattyanItem);
+    } else {
+      console.log("❌ yattyanItemがありません");
+    }
+  }, [yattyanItem, handleCharacterClick]);
+
+  // 外部からの友達キャラクタークリックを処理
   useEffect(() => {
     // グローバル関数としてhandleKotoClickを公開
     (window as any).triggerKotoClick = () => {
@@ -237,11 +285,35 @@ export default function HiraganaScene({
       handleAkariClick();
     };
 
+    (window as any).triggerAyumuClick = () => {
+      console.log("🌐 グローバルtriggerAyumuClickが呼ばれました");
+      handleAyumuClick();
+    };
+
+    (window as any).triggerMionaClick = () => {
+      console.log("🌐 グローバルtriggerMionaClickが呼ばれました");
+      handleMionaClick();
+    };
+
+    (window as any).triggerMitsukiClick = () => {
+      console.log("🌐 グローバルtriggerMitsukiClickが呼ばれました");
+      handleMitsukiClick();
+    };
+
+    (window as any).triggerYattyanClick = () => {
+      console.log("🌐 グローバルtriggerYattyanClickが呼ばれました");
+      handleYattyanClick();
+    };
+
     return () => {
       delete (window as any).triggerKotoClick;
       delete (window as any).triggerAkariClick;
+      delete (window as any).triggerAyumuClick;
+      delete (window as any).triggerMionaClick;
+      delete (window as any).triggerMitsukiClick;
+      delete (window as any).triggerYattyanClick;
     };
-  }, [handleKotoClick, handleAkariClick]);
+  }, [handleKotoClick, handleAkariClick, handleAyumuClick, handleMionaClick, handleMitsukiClick, handleYattyanClick]);
 
   const resetStrokes = () => {
     setUserStrokes([]);
@@ -644,6 +716,14 @@ export default function HiraganaScene({
                           ? "/images/koto.png"
                           : selectedCharacter === "あかり"
                           ? "/images/akari.png"
+                          : selectedCharacter === "あゆむ"
+                          ? "/images/ayumu.png"
+                          : selectedCharacter === "みおな"
+                          ? "/images/miona.png"
+                          : selectedCharacter === "みつき"
+                          ? "/images/mitsuki.png"
+                          : selectedCharacter === "やっちゃん"
+                          ? "/images/yattyan.png"
                           : hiraganaData.find(
                               (item) => item.character === selectedCharacter
                             )?.image || ""
