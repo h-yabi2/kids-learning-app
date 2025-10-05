@@ -662,7 +662,7 @@ export default function HiraganaScene({
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm select-none">
+        <DialogContent className="max-w-[95%] sm:max-w-[70%] h-[80%] mx-auto bg-white/90 backdrop-blur-sm select-none">
           <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 mr-10">
             <DialogTitle className="text-lg sm:text-2xl select-none no-callout">
               「
@@ -741,8 +741,8 @@ export default function HiraganaScene({
                 <canvas
                   ref={canvasRef}
                   width={280}
-                  height={160}
-                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[600px] sm:h-[200px]"
+                  height={230}
+                  className="border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-crosshair block w-full max-w-[600px] h-[300px]"
                   onMouseDown={startTracing}
                   onMouseMove={trace}
                   onMouseUp={stopTracing}
