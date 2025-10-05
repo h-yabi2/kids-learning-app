@@ -586,7 +586,7 @@ export default function HiraganaScene({
                         className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg border-2 sm:border-3 md:border-4 border-white flex items-center justify-center relative overflow-hidden"
                         style={{ backgroundColor: item.color }}
                       >
-                        <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white drop-shadow-lg">
+                        <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-white drop-shadow-lg select-none">
                           {item.character}
                         </div>
                       </div>
@@ -635,7 +635,7 @@ export default function HiraganaScene({
                         className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg shadow-lg border-2 border-white flex items-center justify-center relative overflow-hidden"
                         style={{ backgroundColor: item.color }}
                       >
-                        <div className="text-sm font-bold text-white drop-shadow-lg">
+                        <div className="text-sm font-bold text-white drop-shadow-lg select-none">
                           {item.character}
                         </div>
                       </div>
@@ -678,7 +678,7 @@ export default function HiraganaScene({
                         className="aspect-square w-[40%] max-w-14 min-w-8 rounded-lg shadow-lg border-2 border-white flex items-center justify-center relative overflow-hidden"
                         style={{ backgroundColor: item.color }}
                       >
-                        <div className="text-sm font-bold text-white drop-shadow-lg">
+                        <div className="text-sm font-bold text-white drop-shadow-lg select-none">
                           {item.character}
                         </div>
                       </div>
@@ -708,7 +708,7 @@ export default function HiraganaScene({
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm select-none">
           <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 mr-10">
-            <DialogTitle className="text-lg sm:text-2xl">
+            <DialogTitle className="text-lg sm:text-2xl select-none">
               「{showGuide ? selectedCharacter : "〇〇"}」の れんしゅう
             </DialogTitle>
             <div className="flex gap-2">
@@ -732,9 +732,9 @@ export default function HiraganaScene({
             {/* 大きな文字表示 */}
             <div className="text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-2">
-                <div className="text-5xl sm:text-8xl font-bold text-gray-800">
-                  {showGuide ? selectedCharacter : "〇〇"}
-                </div>
+                 <div className="text-5xl sm:text-8xl font-bold text-gray-800 select-none">
+                   {showGuide ? selectedCharacter : "〇〇"}
+                 </div>
                 {selectedCharacter && (
                   <div className="flex-shrink-0">
                     <img
@@ -771,12 +771,12 @@ export default function HiraganaScene({
             {showGuide &&
               selectedCharacter &&
               ((strokeOrderData[selectedCharacter] && (
-                <div className="text-center text-xs sm:text-sm text-gray-600 mb-4">
+                <div className="text-center text-xs sm:text-sm text-gray-600 mb-4 select-none">
                   {strokeOrderData[selectedCharacter].description}
                 </div>
               )) ||
                 (selectedCharacter === "やびく こと" && (
-                  <div className="text-center text-xs sm:text-sm text-gray-600 mb-4">
+                  <div className="text-center text-xs sm:text-sm text-gray-600 mb-4 select-none">
                     {kotoStrokeData.description}
                   </div>
                 )))}
@@ -784,7 +784,7 @@ export default function HiraganaScene({
             {/* なぞり練習エリア */}
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex justify-center items-center mb-2">
-                <span className="text-xs sm:text-sm font-medium text-gray-700">
+                <span className="text-xs sm:text-sm font-medium text-gray-700 select-none">
                   なぞって れんしゅう しよう！
                 </span>
               </div>
