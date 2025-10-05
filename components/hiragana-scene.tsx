@@ -732,9 +732,9 @@ export default function HiraganaScene({
             {/* 大きな文字表示 */}
             <div className="text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-2">
-                 <div className="text-5xl sm:text-8xl font-bold text-gray-800 select-none">
-                   {showGuide ? selectedCharacter : "〇〇"}
-                 </div>
+                <div className="text-5xl sm:text-8xl font-bold text-gray-800 select-none">
+                  {showGuide ? selectedCharacter : "〇〇"}
+                </div>
                 {selectedCharacter && (
                   <div className="flex-shrink-0">
                     <img
