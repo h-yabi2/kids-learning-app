@@ -329,7 +329,6 @@ export default function HiraganaScene({
     setIsCorrect(false);
     setShowHanamaru(false);
     setHasUserDrawing(false);
-    setShowGuide(true);
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
