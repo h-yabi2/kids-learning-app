@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { X, RotateCcw } from "lucide-react";
+import { X, RotateCcw, Eye, EyeOff } from "lucide-react";
 import {
   hiraganaData,
   strokeOrderData,
@@ -47,6 +47,7 @@ export default function HiraganaScene({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showHanamaru, setShowHanamaru] = useState(false);
   const [hasUserDrawing, setHasUserDrawing] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // アニメーションスタイル
@@ -328,6 +329,7 @@ export default function HiraganaScene({
     setIsCorrect(false);
     setShowHanamaru(false);
     setHasUserDrawing(false);
+    setShowGuide(true);
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
@@ -473,60 +475,63 @@ export default function HiraganaScene({
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 薄いガイドラインを表示
-        ctx.strokeStyle = "#e5e7eb";
-        ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
-
-        const strokes =
-          selectedCharacter === "やびく こと"
-            ? kotoStrokeData.strokes
-            : strokeOrderData[selectedCharacter]?.strokes || [];
-
-        strokes.forEach((strokeData) => {
-          const path = new Path2D(strokeData.path);
-          ctx.stroke(path);
-
-          // 書き順番号を表示
-          ctx.setLineDash([]);
-          ctx.fillStyle = "#ef4444";
-          ctx.font = "bold 16px sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-
-          // 番号の背景円を描画
-          ctx.beginPath();
-          ctx.arc(
-            strokeData.startPoint[0],
-            strokeData.startPoint[1],
-            12,
-            0,
-            2 * Math.PI
-          );
-          ctx.fillStyle = "#ffffff";
-          ctx.fill();
-          ctx.strokeStyle = "#ef4444";
-          ctx.lineWidth = 2;
-          ctx.stroke();
-
-          // 番号を描画
-          ctx.fillStyle = "#ef4444";
-          ctx.fillText(
-            strokeData.number.toString(),
-            strokeData.startPoint[0],
-            strokeData.startPoint[1]
-          );
-
-          // 次の描画のためにリセット
+        // 見本が表示されている場合のみガイドラインを表示
+        if (showGuide) {
+          // 薄いガイドラインを表示
           ctx.strokeStyle = "#e5e7eb";
           ctx.lineWidth = 2;
           ctx.setLineDash([5, 5]);
-        });
 
-        ctx.setLineDash([]);
+          const strokes =
+            selectedCharacter === "やびく こと"
+              ? kotoStrokeData.strokes
+              : strokeOrderData[selectedCharacter]?.strokes || [];
+
+          strokes.forEach((strokeData) => {
+            const path = new Path2D(strokeData.path);
+            ctx.stroke(path);
+
+            // 書き順番号を表示
+            ctx.setLineDash([]);
+            ctx.fillStyle = "#ef4444";
+            ctx.font = "bold 16px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            // 番号の背景円を描画
+            ctx.beginPath();
+            ctx.arc(
+              strokeData.startPoint[0],
+              strokeData.startPoint[1],
+              12,
+              0,
+              2 * Math.PI
+            );
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.strokeStyle = "#ef4444";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 番号を描画
+            ctx.fillStyle = "#ef4444";
+            ctx.fillText(
+              strokeData.number.toString(),
+              strokeData.startPoint[0],
+              strokeData.startPoint[1]
+            );
+
+            // 次の描画のためにリセット
+            ctx.strokeStyle = "#e5e7eb";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+          });
+
+          ctx.setLineDash([]);
+        }
       }
     }
-  }, [selectedCharacter]);
+  }, [selectedCharacter, showGuide]);
 
   // 「こと」の書き順データ
   const kotoStrokeData = {
@@ -702,10 +707,25 @@ export default function HiraganaScene({
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm select-none">
-          <DialogHeader>
-            <DialogTitle className="text-center text-lg sm:text-2xl">
-              「{selectedCharacter}」の れんしゅう
+          <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <DialogTitle className="text-lg sm:text-2xl">
+              「{showGuide ? selectedCharacter : "〇〇"}」の れんしゅう
             </DialogTitle>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowGuide(!showGuide)}
+                className="flex items-center gap-2"
+              >
+                {showGuide ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+                {showGuide ? "見本をかくす" : "見本を表示"}
+              </Button>
+            </div>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -713,7 +733,7 @@ export default function HiraganaScene({
             <div className="text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-2">
                 <div className="text-5xl sm:text-8xl font-bold text-gray-800">
-                  {selectedCharacter}
+                  {showGuide ? selectedCharacter : "〇〇"}
                 </div>
                 {selectedCharacter && (
                   <div className="flex-shrink-0">
@@ -748,7 +768,8 @@ export default function HiraganaScene({
             </div>
 
             {/* 書き順説明 */}
-            {selectedCharacter &&
+            {showGuide &&
+              selectedCharacter &&
               ((strokeOrderData[selectedCharacter] && (
                 <div className="text-center text-xs sm:text-sm text-gray-600 mb-4">
                   {strokeOrderData[selectedCharacter].description}
