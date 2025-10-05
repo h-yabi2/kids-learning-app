@@ -482,44 +482,12 @@ export default function HiraganaScene({
           ctx.lineWidth = 2;
           ctx.setLineDash([5, 5]);
 
-          const strokes =
-            selectedCharacter === "やびく こと"
-              ? kotoStrokeData.strokes
-              : strokeOrderData[selectedCharacter]?.strokes || [];
+          const strokes = strokeOrderData[selectedCharacter]?.strokes || [];
 
           strokes.forEach((strokeData) => {
             const path = new Path2D(strokeData.path);
             ctx.stroke(path);
 
-            // 書き順番号を表示
-            ctx.setLineDash([]);
-            ctx.fillStyle = "#ef4444";
-            ctx.font = "bold 16px sans-serif";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-
-            // 番号の背景円を描画
-            ctx.beginPath();
-            ctx.arc(
-              strokeData.startPoint[0],
-              strokeData.startPoint[1],
-              12,
-              0,
-              2 * Math.PI
-            );
-            ctx.fillStyle = "#ffffff";
-            ctx.fill();
-            ctx.strokeStyle = "#ef4444";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // 番号を描画
-            ctx.fillStyle = "#ef4444";
-            ctx.fillText(
-              strokeData.number.toString(),
-              strokeData.startPoint[0],
-              strokeData.startPoint[1]
-            );
 
             // 次の描画のためにリセット
             ctx.strokeStyle = "#e5e7eb";
@@ -533,16 +501,6 @@ export default function HiraganaScene({
     }
   }, [selectedCharacter, showGuide]);
 
-  // 「こと」の書き順データ
-  const kotoStrokeData = {
-    strokes: [
-      { path: "M30,30 L70,30", number: 1, startPoint: [30, 30] },
-      { path: "M30,60 Q50,50 70,60", number: 2, startPoint: [30, 60] },
-      { path: "M40,20 L40,80", number: 3, startPoint: [40, 20] },
-      { path: "M60,30 Q70,50 60,70", number: 4, startPoint: [60, 30] },
-    ],
-    description: "①横線、②下の曲線、③縦線、④右の曲線の順番で書きます",
-  };
 
   // 各行ごとに縦に並べる（あ行、か行…や行、ら行、わ行）
   const rowsData = [
@@ -767,19 +725,6 @@ export default function HiraganaScene({
               </div>
             </div>
 
-            {/* 書き順説明 */}
-            {showGuide &&
-              selectedCharacter &&
-              ((strokeOrderData[selectedCharacter] && (
-                <div className="text-center text-xs sm:text-sm text-gray-600 mb-4 select-none">
-                  {strokeOrderData[selectedCharacter].description}
-                </div>
-              )) ||
-                (selectedCharacter === "やびく こと" && (
-                  <div className="text-center text-xs sm:text-sm text-gray-600 mb-4 select-none">
-                    {kotoStrokeData.description}
-                  </div>
-                )))}
 
             {/* なぞり練習エリア */}
             <div className="bg-gray-50 rounded-lg p-4">
