@@ -109,10 +109,10 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
     <>
       {/* 友達キャラクターの特別表示 */}
       <div className="mb-8 text-center">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 justify-center items-center">
+        <div className="flex gap-4 justify-start items-center overflow-x-auto pb-4 scrollbar-hide">
           {/* 「こと」の表示 */}
           <div
-            className="bg-gradient-to-r from-pink-400 to-purple-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-pink-400 to-purple-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 flex-shrink-0 min-w-[120px]"
             onClick={() => {
               console.log("🔵 「こと」がクリックされました");
               playClickSound();
@@ -141,7 +141,7 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
 
           {/* 「あかり」の表示 */}
           <div
-            className="bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 flex-shrink-0 min-w-[120px]"
             onClick={() => {
               console.log("🔵 「あかり」がクリックされました");
               playClickSound();
@@ -170,7 +170,7 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
 
           {/* 「あゆむ」の表示 */}
           <div
-            className="bg-gradient-to-r from-pink-400 to-rose-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-pink-400 to-rose-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 flex-shrink-0 min-w-[120px]"
             onClick={() => {
               console.log("🔵 「あゆむ」がクリックされました");
               playClickSound();
@@ -199,7 +199,7 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
 
           {/* 「みおな」の表示 */}
           <div
-            className="bg-gradient-to-r from-purple-400 to-violet-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-purple-400 to-violet-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 flex-shrink-0 min-w-[120px]"
             onClick={() => {
               console.log("🔵 「みおな」がクリックされました");
               playClickSound();
@@ -228,7 +228,7 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
 
           {/* 「みつき」の表示 */}
           <div
-            className="bg-gradient-to-r from-orange-400 to-amber-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-orange-400 to-amber-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 flex-shrink-0 min-w-[120px]"
             onClick={() => {
               console.log("🔵 「みつき」がクリックされました");
               playClickSound();
@@ -257,7 +257,7 @@ const HiraganaTab: React.FC<HiraganaTabProps> = ({ onHiraganaClick }) => {
 
           {/* 「やっちゃん」の表示 */}
           <div
-            className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-3 sm:p-4 shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 flex-shrink-0 min-w-[120px]"
             onClick={() => {
               console.log("🔵 「やっちゃん」がクリックされました");
               playClickSound();
