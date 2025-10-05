@@ -661,7 +661,7 @@ export default function HiraganaScene({
 
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-[95%] sm:max-w-[70%] h-[80%] mx-auto bg-white/90 backdrop-blur-sm select-none">
+        <DialogContent className="max-w-[95%] sm:max-w-[70%] h-[80%] mx-auto bg-white/90 backdrop-blur-sm select-none no-callout">
           <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 mr-10">
             <DialogTitle className="text-lg sm:text-2xl select-none no-callout">
               「
