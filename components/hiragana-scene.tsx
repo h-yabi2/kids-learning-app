@@ -707,7 +707,7 @@ export default function HiraganaScene({
       {/* 書き順練習モーダル */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm select-none">
-          <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 mr-10">
             <DialogTitle className="text-lg sm:text-2xl">
               「{showGuide ? selectedCharacter : "〇〇"}」の れんしゅう
             </DialogTitle>
