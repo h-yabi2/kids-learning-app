@@ -488,7 +488,6 @@ export default function HiraganaScene({
             const path = new Path2D(strokeData.path);
             ctx.stroke(path);
 
-
             // 次の描画のためにリセット
             ctx.strokeStyle = "#e5e7eb";
             ctx.lineWidth = 2;
@@ -500,7 +499,6 @@ export default function HiraganaScene({
       }
     }
   }, [selectedCharacter, showGuide]);
-
 
   // 各行ごとに縦に並べる（あ行、か行…や行、ら行、わ行）
   const rowsData = [
@@ -667,7 +665,11 @@ export default function HiraganaScene({
         <DialogContent className="max-w-[95%] sm:max-w-[70%] mx-auto bg-white/90 backdrop-blur-sm select-none">
           <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4 mr-10">
             <DialogTitle className="text-lg sm:text-2xl select-none">
-              「{showGuide ? selectedCharacter : "〇〇"}」の れんしゅう
+              「
+              {showGuide
+                ? selectedCharacter
+                : "〇".repeat(selectedCharacter?.length || 0)}
+              」の れんしゅう
             </DialogTitle>
             <div className="flex gap-2">
               <Button
@@ -691,7 +693,9 @@ export default function HiraganaScene({
             <div className="text-center">
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-2">
                 <div className="text-5xl sm:text-8xl font-bold text-gray-800 select-none">
-                  {showGuide ? selectedCharacter : "〇〇"}
+                  {showGuide
+                    ? selectedCharacter
+                    : "〇".repeat(selectedCharacter?.length || 0)}
                 </div>
                 {selectedCharacter && (
                   <div className="flex-shrink-0">
@@ -724,7 +728,6 @@ export default function HiraganaScene({
                 )}
               </div>
             </div>
-
 
             {/* なぞり練習エリア */}
             <div className="bg-gray-50 rounded-lg p-4">
