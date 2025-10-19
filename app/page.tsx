@@ -225,21 +225,8 @@ export default function ColorLearningApp() {
   };
 
   const handleNumberClick = (number: any) => {
-    setSelectedCrayon({
-      id: number.id ?? "number",
-      nameJapanese: number.nameJapanese,
-      name: number.nameEnglish,
-      color: number.color,
-      usage: 0,
-    });
-    setShowPopup(true);
-    if (popupTimeoutRef.current) {
-      clearTimeout(popupTimeoutRef.current);
-    }
-    popupTimeoutRef.current = setTimeout(() => {
-      setShowPopup(false);
-    }, 2000);
-    speakText(number.nameJapanese);
+    // 数字クリック時はポップアップ表示なし（書き順練習ダイアログのみ）
+    // 音声読み上げは number-scene.tsx 内で行われるため、ここでは何もしない
   };
 
   const handleInstrumentClick = (instrument: any) => {
