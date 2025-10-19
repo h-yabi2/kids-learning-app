@@ -333,25 +333,6 @@ export default function NumberScene({ onNumberClick }: NumberSceneProps) {
                     ? numbersData.find((n) => n.id === selectedNumber)?.number
                     : "〇"}
                 </div>
-                {selectedNumber && (
-                  <div className="flex-shrink-0">
-                    <div
-                      className="w-24 h-24 sm:w-24 sm:h-24 rounded-2xl shadow-lg border-4 border-white flex items-center justify-center"
-                      style={{
-                        backgroundColor: numbersData.find(
-                          (n) => n.id === selectedNumber
-                        )?.color,
-                      }}
-                    >
-                      <div className="text-4xl font-bold text-white drop-shadow-lg">
-                        {
-                          numbersData.find((n) => n.id === selectedNumber)
-                            ?.number
-                        }
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
