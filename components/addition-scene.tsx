@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { additionProblems, type AdditionProblem } from "@/lib/addition-data";
+import {
+  generateRandomProblem,
+  type AdditionProblem,
+} from "@/lib/addition-data";
 import { RotateCcw } from "lucide-react";
 
 interface AdditionSceneProps {
@@ -10,7 +13,9 @@ interface AdditionSceneProps {
 }
 
 export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
-  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const [currentProblem, setCurrentProblem] = useState<AdditionProblem>(() =>
+    generateRandomProblem()
+  );
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -18,7 +23,8 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
 
-  const currentProblem = additionProblems[currentProblemIndex];
+  // 音声キャッシュ用のMap
+  const audioCache = useRef(new Map<string, string>()).current;
 
   // クリック効果音を生成する関数
   const playClickSound = useCallback(() => {
@@ -50,16 +56,83 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     }
   }, []);
 
-  // Text-to-speech function
-  const speakText = useCallback((text: string, lang = "ja-JP") => {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = 0.8;
-      utterance.pitch = 1.4;
-      speechSynthesis.speak(utterance);
-    }
-  }, []);
+  // Text-to-speech function (最適化版)
+  const speakText = useCallback(
+    async (text: string, lang = "ja-JP") => {
+      try {
+        // キャッシュキーを作成
+        const cacheKey = `${text}-ja-JP-Neural2-C`;
+
+        // キャッシュされた音声があるかチェック
+        if (audioCache.has(cacheKey)) {
+          const cachedUrl = audioCache.get(cacheKey)!;
+          const audio = new Audio(cachedUrl);
+          await audio.play();
+          console.log("☁️ キャッシュから音声を再生");
+          return;
+        }
+
+        // TTS APIを呼び出し
+        const startTime = performance.now();
+        const response = await fetch("/api/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: text,
+            voice: "ja-JP-Neural2-C",
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("TTS API request failed");
+        }
+
+        const data = await response.json();
+        const apiTime = performance.now() - startTime;
+
+        // 非同期で音声データを処理
+        const processStartTime = performance.now();
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
+          { type: data.format }
+        );
+
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const processTime = performance.now() - processStartTime;
+
+        // キャッシュに保存
+        audioCache.set(cacheKey, audioUrl);
+
+        const audio = new Audio(audioUrl);
+
+        // 再生開始
+        await audio.play();
+        const totalTime = performance.now() - startTime;
+
+        console.log("🎵 TTS パフォーマンス:", {
+          apiTime: `${apiTime.toFixed(2)}ms`,
+          processTime: `${processTime.toFixed(2)}ms`,
+          totalTime: `${totalTime.toFixed(2)}ms`,
+          cacheSize: audioCache.size,
+        });
+      } catch (error) {
+        console.error("TTS Error:", error);
+        console.log("🔄 Falling back to Web Speech API");
+        // フォールバック: Web Speech APIを使用
+        if ("speechSynthesis" in window) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang;
+          utterance.rate = 0.7;
+          utterance.pitch = 1.2;
+          utterance.volume = 0.9;
+          speechSynthesis.speak(utterance);
+        }
+      }
+    },
+    [audioCache]
+  );
 
   // 問題を読み上げる
   useEffect(() => {
@@ -67,7 +140,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
       const problemText = `${currentProblem.num1}たす${currentProblem.num2}は？`;
       speakText(problemText);
     }
-  }, [currentProblemIndex, speakText]);
+  }, [currentProblem, speakText]);
 
   const handleAnswerClick = (choice: number) => {
     if (showResult) return; // 既に答えが表示されている場合は無視
@@ -82,7 +155,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
       setShowHanamaru(true);
       setScore((prev) => prev + 1);
       speakText(`せいかい！${currentProblem.answer}`);
-      
+
       // 3秒後に次の問題へ
       setTimeout(() => {
         nextProblem();
@@ -90,7 +163,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     } else {
       setIsCorrect(false);
       speakText(`ちがいます。こたえは${currentProblem.answer}です。`);
-      
+
       // 2秒後に次の問題へ
       setTimeout(() => {
         nextProblem();
@@ -103,7 +176,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
   };
 
   const nextProblem = () => {
-    setCurrentProblemIndex((prev) => (prev + 1) % additionProblems.length);
+    setCurrentProblem(generateRandomProblem());
     setSelectedAnswer(null);
     setShowResult(false);
     setIsCorrect(false);
@@ -111,7 +184,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
   };
 
   const resetGame = () => {
-    setCurrentProblemIndex(0);
+    setCurrentProblem(generateRandomProblem());
     setSelectedAnswer(null);
     setShowResult(false);
     setIsCorrect(false);
@@ -150,7 +223,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
             <div className="text-2xl sm:text-3xl font-bold text-gray-700 mb-4">
               もんだい
             </div>
-            
+
             {/* 数値の視覚的表示 */}
             <div className="flex items-center justify-center gap-4 mb-6">
               {/* 最初の数 */}
@@ -192,7 +265,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
 
           {/* 選択肢 */}
           <div className="grid grid-cols-2 gap-4 mt-8">
-            {currentProblem.choices.map((choice, index) => {
+            {currentProblem.choices.map((choice: number, index: number) => {
               const isSelected = selectedAnswer === choice;
               const isCorrectChoice = choice === currentProblem.answer;
               const showCorrect = showResult && isCorrectChoice;
@@ -206,7 +279,11 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                   className={`
                     relative p-6 rounded-2xl text-4xl sm:text-5xl font-bold
                     transition-all duration-300 transform
-                    ${showResult ? "cursor-not-allowed" : "cursor-pointer hover:scale-105 active:scale-95"}
+                    ${
+                      showResult
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer hover:scale-105 active:scale-95"
+                    }
                     ${
                       showCorrect
                         ? "bg-green-500 text-white shadow-lg ring-4 ring-green-300"
@@ -306,4 +383,3 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     </div>
   );
 }
-

@@ -7,9 +7,8 @@ export interface AdditionProblem {
   color: string;
 }
 
-// 足し算の問題を生成する関数
-const generateAdditionProblems = (): AdditionProblem[] => {
-  const problems: AdditionProblem[] = [];
+// 1つの問題を生成する関数
+const generateSingleProblem = (): AdditionProblem => {
   const colors = [
     "#FF6B6B", // 赤
     "#4ECDC4", // ターコイズ
@@ -23,54 +22,49 @@ const generateAdditionProblems = (): AdditionProblem[] => {
     "#85C1E9", // ライトブルー
   ];
 
-  let colorIndex = 0;
-
-  // 1+1から5+5までの簡単な問題を生成
-  for (let num1 = 1; num1 <= 5; num1++) {
-    for (let num2 = 1; num2 <= 5; num2++) {
-      const answer = num1 + num2;
-      
-      // 選択肢を生成（正解 + 3つの間違った選択肢）
-      const choices = new Set<number>();
-      choices.add(answer);
-      
-      // 間違った選択肢を追加（答えに近い値やランダムな値）
-      while (choices.size < 4) {
-        const wrongAnswer = answer + Math.floor(Math.random() * 5) - 2;
-        if (wrongAnswer > 0 && wrongAnswer !== answer) {
-          choices.add(wrongAnswer);
-        } else {
-          // もし範囲外なら、答え±3の範囲でランダムに生成
-          const randomOffset = Math.floor(Math.random() * 6) - 3;
-          const candidate = answer + randomOffset;
-          if (candidate > 0 && candidate !== answer) {
-            choices.add(candidate);
-          }
-        }
+  // 1~10のランダムな数字を生成
+  const num1 = Math.floor(Math.random() * 10) + 1;
+  const num2 = Math.floor(Math.random() * 10) + 1;
+  const answer = num1 + num2;
+  
+  // 選択肢を生成（正解 + 3つの間違った選択肢）
+  const choices = new Set<number>();
+  choices.add(answer);
+  
+  // 間違った選択肢を追加（答えに近い値やランダムな値）
+  while (choices.size < 4) {
+    // 答え±5の範囲でランダムに生成
+    const offset = Math.floor(Math.random() * 11) - 5; // -5から+5の範囲
+    const wrongAnswer = answer + offset;
+    if (wrongAnswer > 0 && wrongAnswer !== answer && wrongAnswer <= 20) {
+      choices.add(wrongAnswer);
+    } else {
+      // もし範囲外なら、1~20の範囲でランダムに生成
+      const randomAnswer = Math.floor(Math.random() * 20) + 1;
+      if (randomAnswer !== answer) {
+        choices.add(randomAnswer);
       }
-      
-      // Setを配列に変換してシャッフル
-      const choicesArray = Array.from(choices);
-      for (let i = choicesArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [choicesArray[i], choicesArray[j]] = [choicesArray[j], choicesArray[i]];
-      }
-
-      problems.push({
-        id: `add-${num1}-${num2}`,
-        num1,
-        num2,
-        answer,
-        choices: choicesArray,
-        color: colors[colorIndex % colors.length],
-      });
-      
-      colorIndex++;
     }
   }
+  
+  // Setを配列に変換してシャッフル
+  const choicesArray = Array.from(choices);
+  for (let i = choicesArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [choicesArray[i], choicesArray[j]] = [choicesArray[j], choicesArray[i]];
+  }
 
-  return problems;
+  return {
+    id: `add-${num1}-${num2}-${Date.now()}`,
+    num1,
+    num2,
+    answer,
+    choices: choicesArray,
+    color: colors[Math.floor(Math.random() * colors.length)],
+  };
 };
 
-export const additionProblems: AdditionProblem[] = generateAdditionProblems();
-
+// 新しいランダムな問題を生成する関数（シーンコンポーネントから使用）
+export const generateRandomProblem = (): AdditionProblem => {
+  return generateSingleProblem();
+};

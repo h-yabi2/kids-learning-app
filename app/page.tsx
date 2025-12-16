@@ -292,7 +292,12 @@ export default function ColorLearningApp() {
           {/* タブナビゲーション */}
           <div className="mt-4 flex justify-center space-x-2">
             {Object.entries(tabTitles)
-              .filter(([tabId]) => tabId === "hiragana" || tabId === "numbers" || tabId === "addition")
+              .filter(
+                ([tabId]) =>
+                  tabId === "hiragana" ||
+                  tabId === "numbers" ||
+                  tabId === "addition"
+              )
               .map(([tabId, tabInfo]) => (
                 <button
                   key={tabId}
