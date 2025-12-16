@@ -10,6 +10,7 @@ import ParkTab from "@/components/tabs/ParkTab";
 import NumbersTab from "@/components/tabs/NumbersTab";
 import InstrumentsTab from "@/components/tabs/InstrumentsTab";
 import FriendsTab from "@/components/tabs/FriendsTab";
+import AdditionTab from "@/components/tabs/AdditionTab";
 
 interface Crayon {
   id: string;
@@ -115,6 +116,10 @@ export default function ColorLearningApp() {
     numbers: {
       title: "すうじ",
       description: "すうじをタップして、かずをおぼえよう！",
+    },
+    addition: {
+      title: "たしざん",
+      description: "こたえをえらんで、たしざんをおぼえよう！",
     },
     instruments: {
       title: "がっき",
@@ -287,7 +292,7 @@ export default function ColorLearningApp() {
           {/* タブナビゲーション */}
           <div className="mt-4 flex justify-center space-x-2">
             {Object.entries(tabTitles)
-              .filter(([tabId]) => tabId === "hiragana" || tabId === "numbers")
+              .filter(([tabId]) => tabId === "hiragana" || tabId === "numbers" || tabId === "addition")
               .map(([tabId, tabInfo]) => (
                 <button
                   key={tabId}
@@ -331,6 +336,9 @@ export default function ColorLearningApp() {
           )}
           {activeTab === "numbers" && (
             <NumbersTab onNumberClick={handleNumberClick} />
+          )}
+          {activeTab === "addition" && (
+            <AdditionTab onProblemClick={handleNumberClick} />
           )}
           {activeTab === "instruments" && (
             <InstrumentsTab onInstrumentClick={handleInstrumentClick} />

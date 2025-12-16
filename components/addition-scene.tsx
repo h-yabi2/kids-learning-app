@@ -1,0 +1,309 @@
+"use client";
+
+import { useState, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { additionProblems, type AdditionProblem } from "@/lib/addition-data";
+import { RotateCcw } from "lucide-react";
+
+interface AdditionSceneProps {
+  onProblemClick?: (problem: AdditionProblem) => void;
+}
+
+export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
+  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [showHanamaru, setShowHanamaru] = useState(false);
+  const [score, setScore] = useState(0);
+  const [totalAnswered, setTotalAnswered] = useState(0);
+
+  const currentProblem = additionProblems[currentProblemIndex];
+
+  // クリック効果音を生成する関数
+  const playClickSound = useCallback(() => {
+    try {
+      const audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      oscillator.type = "sine";
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(
+        0.1,
+        audioContext.currentTime + 0.01
+      );
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1
+      );
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (error) {
+      console.log("音声再生エラー:", error);
+    }
+  }, []);
+
+  // Text-to-speech function
+  const speakText = useCallback((text: string, lang = "ja-JP") => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      utterance.rate = 0.8;
+      utterance.pitch = 1.4;
+      speechSynthesis.speak(utterance);
+    }
+  }, []);
+
+  // 問題を読み上げる
+  useEffect(() => {
+    if (currentProblem) {
+      const problemText = `${currentProblem.num1}たす${currentProblem.num2}は？`;
+      speakText(problemText);
+    }
+  }, [currentProblemIndex, speakText]);
+
+  const handleAnswerClick = (choice: number) => {
+    if (showResult) return; // 既に答えが表示されている場合は無視
+
+    playClickSound();
+    setSelectedAnswer(choice);
+    setShowResult(true);
+    setTotalAnswered((prev) => prev + 1);
+
+    if (choice === currentProblem.answer) {
+      setIsCorrect(true);
+      setShowHanamaru(true);
+      setScore((prev) => prev + 1);
+      speakText(`せいかい！${currentProblem.answer}`);
+      
+      // 3秒後に次の問題へ
+      setTimeout(() => {
+        nextProblem();
+      }, 3000);
+    } else {
+      setIsCorrect(false);
+      speakText(`ちがいます。こたえは${currentProblem.answer}です。`);
+      
+      // 2秒後に次の問題へ
+      setTimeout(() => {
+        nextProblem();
+      }, 2000);
+    }
+
+    if (onProblemClick) {
+      onProblemClick(currentProblem);
+    }
+  };
+
+  const nextProblem = () => {
+    setCurrentProblemIndex((prev) => (prev + 1) % additionProblems.length);
+    setSelectedAnswer(null);
+    setShowResult(false);
+    setIsCorrect(false);
+    setShowHanamaru(false);
+  };
+
+  const resetGame = () => {
+    setCurrentProblemIndex(0);
+    setSelectedAnswer(null);
+    setShowResult(false);
+    setIsCorrect(false);
+    setShowHanamaru(false);
+    setScore(0);
+    setTotalAnswered(0);
+  };
+
+  // ドットを生成する関数（視覚的な数え方のサポート）
+  const generateDots = (count: number) => {
+    return Array.from({ length: count }, (_, i) => (
+      <div
+        key={i}
+        className="w-4 h-4 bg-white rounded-full border-2 border-gray-300"
+        style={{ animationDelay: `${i * 0.1}s` }}
+      />
+    ));
+  };
+
+  return (
+    <div className="w-full">
+      {/* スコア表示 */}
+      <div className="mb-6 text-center">
+        <div className="inline-block bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 shadow-lg">
+          <div className="text-sm text-gray-600 mb-1">せいかいすう</div>
+          <div className="text-3xl font-bold text-blue-600">
+            {score} / {totalAnswered}
+          </div>
+        </div>
+      </div>
+
+      {/* 問題表示 */}
+      <div className="mb-8">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-4 border-white">
+          <div className="text-center mb-6">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-700 mb-4">
+              もんだい
+            </div>
+            
+            {/* 数値の視覚的表示 */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              {/* 最初の数 */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                  {currentProblem.num1}
+                </div>
+                <div className="flex flex-wrap justify-center gap-1 max-w-32">
+                  {generateDots(currentProblem.num1)}
+                </div>
+              </div>
+
+              {/* プラス記号 */}
+              <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                +
+              </div>
+
+              {/* 2番目の数 */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                  {currentProblem.num2}
+                </div>
+                <div className="flex flex-wrap justify-center gap-1 max-w-32">
+                  {generateDots(currentProblem.num2)}
+                </div>
+              </div>
+
+              {/* イコール記号 */}
+              <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                =
+              </div>
+
+              {/* 答えの表示エリア */}
+              <div className="text-5xl sm:text-7xl font-bold text-gray-800 min-w-[80px]">
+                ?
+              </div>
+            </div>
+          </div>
+
+          {/* 選択肢 */}
+          <div className="grid grid-cols-2 gap-4 mt-8">
+            {currentProblem.choices.map((choice, index) => {
+              const isSelected = selectedAnswer === choice;
+              const isCorrectChoice = choice === currentProblem.answer;
+              const showCorrect = showResult && isCorrectChoice;
+              const showWrong = showResult && isSelected && !isCorrectChoice;
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleAnswerClick(choice)}
+                  disabled={showResult}
+                  className={`
+                    relative p-6 rounded-2xl text-4xl sm:text-5xl font-bold
+                    transition-all duration-300 transform
+                    ${showResult ? "cursor-not-allowed" : "cursor-pointer hover:scale-105 active:scale-95"}
+                    ${
+                      showCorrect
+                        ? "bg-green-500 text-white shadow-lg ring-4 ring-green-300"
+                        : showWrong
+                        ? "bg-red-500 text-white shadow-lg ring-4 ring-red-300"
+                        : isSelected
+                        ? "bg-blue-400 text-white shadow-lg"
+                        : "bg-white text-gray-800 shadow-md border-2 border-gray-200 hover:border-blue-400"
+                    }
+                  `}
+                >
+                  {choice}
+                  {showCorrect && (
+                    <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
+                      ✓
+                    </div>
+                  )}
+                  {showWrong && (
+                    <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
+                      ✗
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* リセットボタン */}
+      <div className="text-center">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={resetGame}
+          className="min-h-[44px] px-6 py-3"
+        >
+          <RotateCcw className="h-5 w-5 mr-2" />
+          はじめから
+        </Button>
+      </div>
+
+      {/* 花丸表示 */}
+      {showHanamaru && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 animate-in fade-in duration-300 !mt-0 border-none rounded-sm">
+          <div className="bg-white rounded-2xl p-4 sm:p-8 text-center shadow-2xl transform animate-in zoom-in-95 duration-500 relative overflow-hidden mx-4">
+            {/* キラキラエフェクト */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-4 left-4 text-yellow-400 animate-pulse">
+                ✨
+              </div>
+              <div className="absolute top-6 right-6 text-pink-400 animate-bounce delay-100">
+                ⭐
+              </div>
+              <div className="absolute bottom-8 left-8 text-blue-400 animate-pulse delay-200">
+                💫
+              </div>
+              <div className="absolute bottom-4 right-4 text-purple-400 animate-bounce delay-300">
+                ✨
+              </div>
+              <div className="absolute top-1/2 left-2 text-green-400 animate-pulse delay-150">
+                🌟
+              </div>
+              <div className="absolute top-1/2 right-2 text-red-400 animate-bounce delay-250">
+                ⭐
+              </div>
+            </div>
+
+            {/* メイン花丸 */}
+            <div className="relative z-10">
+              <div className="mb-2 sm:mb-4 flex justify-center">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 text-4xl sm:text-6xl animate-bounce">
+                  <img
+                    src="/hanamaru.svg"
+                    alt="よくできました"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+              <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3 animate-pulse">
+                せいかい！
+              </div>
+              <div className="text-lg sm:text-2xl text-gray-700 mb-2">
+                こたえは {currentProblem.answer} です
+              </div>
+
+              {/* 追加の装飾 */}
+              <div className="mt-4 flex justify-center space-x-2">
+                <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse delay-100"></div>
+                <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse delay-200"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
