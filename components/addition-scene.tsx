@@ -206,77 +206,78 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
 
   return (
     <div className="w-full">
-      {/* スコア表示 */}
-      <div className="mb-6 text-center">
-        <div className="inline-block bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 shadow-lg">
-          <div className="text-sm text-gray-600 mb-1">せいかいすう</div>
-          <div className="text-3xl font-bold text-blue-600">
-            {score} / {totalAnswered}
-          </div>
-        </div>
-      </div>
-
       {/* 問題表示 */}
       <div className="mb-8">
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-4 border-white">
-          <div className="text-center mb-6">
-            <div className="text-2xl sm:text-3xl font-bold text-gray-700 mb-4">
-              もんだい
-            </div>
-
-            {/* 数値の視覚的表示 */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              {/* 最初の数 */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
-                  {currentProblem.num1}
-                </div>
-                <div className="flex flex-wrap justify-center gap-1 max-w-32">
-                  {generateDots(currentProblem.num1)}
-                </div>
-              </div>
-
-              {/* プラス記号 */}
-              <div className="text-5xl sm:text-7xl font-bold text-gray-800">
-                +
-              </div>
-
-              {/* 2番目の数 */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
-                  {currentProblem.num2}
-                </div>
-                <div className="flex flex-wrap justify-center gap-1 max-w-32">
-                  {generateDots(currentProblem.num2)}
-                </div>
-              </div>
-
-              {/* イコール記号 */}
-              <div className="text-5xl sm:text-7xl font-bold text-gray-800">
-                =
-              </div>
-
-              {/* 答えの表示エリア */}
-              <div className="text-5xl sm:text-7xl font-bold text-gray-800 min-w-[80px]">
-                ?
+        <div className="flex bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-4 border-white">
+          {/* スコア表示 */}
+          <div className="mb-6 text-center">
+            <div className="inline-block bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 shadow-lg">
+              <div className="text-sm text-gray-600 mb-1">せいかいすう</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {score} / {totalAnswered}
               </div>
             </div>
           </div>
 
-          {/* 選択肢 */}
-          <div className="grid grid-cols-2 gap-4 mt-8">
-            {currentProblem.choices.map((choice: number, index: number) => {
-              const isSelected = selectedAnswer === choice;
-              const isCorrectChoice = choice === currentProblem.answer;
-              const showCorrect = showResult && isCorrectChoice;
-              const showWrong = showResult && isSelected && !isCorrectChoice;
+          <div className="flex-1">
+            <div className="text-center mb-6">
+              <div className="text-2xl sm:text-3xl font-bold text-gray-700 mb-4">
+                もんだい
+              </div>
 
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleAnswerClick(choice)}
-                  disabled={showResult}
-                  className={`
+              {/* 数値の視覚的表示 */}
+              <div className="flex items-center justify-center gap-4 mb-6">
+                {/* 最初の数 */}
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                    {currentProblem.num1}
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-1 max-w-32">
+                    {generateDots(currentProblem.num1)}
+                  </div>
+                </div>
+
+                {/* プラス記号 */}
+                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                  +
+                </div>
+
+                {/* 2番目の数 */}
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                    {currentProblem.num2}
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-1 max-w-32">
+                    {generateDots(currentProblem.num2)}
+                  </div>
+                </div>
+
+                {/* イコール記号 */}
+                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                  =
+                </div>
+
+                {/* 答えの表示エリア */}
+                <div className="text-5xl sm:text-7xl font-bold text-gray-800 min-w-[80px]">
+                  ?
+                </div>
+              </div>
+            </div>
+
+            {/* 選択肢 */}
+            <div className="grid grid-cols-2 gap-4 mt-8">
+              {currentProblem.choices.map((choice: number, index: number) => {
+                const isSelected = selectedAnswer === choice;
+                const isCorrectChoice = choice === currentProblem.answer;
+                const showCorrect = showResult && isCorrectChoice;
+                const showWrong = showResult && isSelected && !isCorrectChoice;
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswerClick(choice)}
+                    disabled={showResult}
+                    className={`
                     relative p-6 rounded-2xl text-4xl sm:text-5xl font-bold
                     transition-all duration-300 transform
                     ${
@@ -294,21 +295,22 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                         : "bg-white text-gray-800 shadow-md border-2 border-gray-200 hover:border-blue-400"
                     }
                   `}
-                >
-                  {choice}
-                  {showCorrect && (
-                    <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
-                      ✓
-                    </div>
-                  )}
-                  {showWrong && (
-                    <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
-                      ✗
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+                  >
+                    {choice}
+                    {showCorrect && (
+                      <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
+                        ✓
+                      </div>
+                    )}
+                    {showWrong && (
+                      <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
+                        ✗
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
