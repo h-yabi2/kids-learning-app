@@ -23,9 +23,9 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
 
-  // おはじきの状態管理（左側と右側のみ）
-  const [leftBeads, setLeftBeads] = useState(0);
-  const [rightBeads, setRightBeads] = useState(0);
+  // おはじきの状態管理（各おはじきの元の位置を記録して色を維持）
+  const [leftBeads, setLeftBeads] = useState<Array<"left" | "right">>([]);
+  const [rightBeads, setRightBeads] = useState<Array<"left" | "right">>([]);
 
   // 音声キャッシュ用のMap
   const audioCache = useRef(new Map<string, string>()).current;
@@ -143,9 +143,13 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     if (currentProblem) {
       const problemText = `${currentProblem.num1}たす${currentProblem.num2}は？`;
       speakText(problemText);
-      // おはじきをリセット
-      setLeftBeads(currentProblem.num1);
-      setRightBeads(currentProblem.num2);
+      // おはじきをリセット（左側にnum1個、右側にnum2個）
+      setLeftBeads(
+        Array.from({ length: currentProblem.num1 }, () => "left" as const)
+      );
+      setRightBeads(
+        Array.from({ length: currentProblem.num2 }, () => "right" as const)
+      );
     }
   }, [currentProblem, speakText]);
 
@@ -213,37 +217,43 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     ));
   };
 
-  // おはじきを移動する関数（左側と右側の間で移動）
-  const handleBeadMove = (from: "left" | "right") => {
+  // おはじきを移動する関数（左側と右側の間で移動、色を維持）
+  const handleBeadMove = (from: "left" | "right", index: number) => {
     if (showResult) return; // 答えが表示されている場合は無視
 
     playClickSound();
 
-    if (from === "left" && leftBeads > 0) {
-      // 左側から右側へ
-      setLeftBeads((prev) => prev - 1);
-      setRightBeads((prev) => prev + 1);
-    } else if (from === "right" && rightBeads > 0) {
-      // 右側から左側へ
-      setRightBeads((prev) => prev - 1);
-      setLeftBeads((prev) => prev + 1);
+    if (from === "left" && leftBeads.length > 0 && index < leftBeads.length) {
+      // 左側から右側へ（元の色を維持）
+      const bead = leftBeads[index];
+      setLeftBeads((prev) => prev.filter((_, i) => i !== index));
+      setRightBeads((prev) => [...prev, bead]);
+    } else if (
+      from === "right" &&
+      rightBeads.length > 0 &&
+      index < rightBeads.length
+    ) {
+      // 右側から左側へ（元の色を維持）
+      const bead = rightBeads[index];
+      setRightBeads((prev) => prev.filter((_, i) => i !== index));
+      setLeftBeads((prev) => [...prev, bead]);
     }
   };
 
-  // 全て移動する関数
+  // 全て移動する関数（色を維持）
   const handleMoveAll = (from: "left" | "right") => {
     if (showResult) return;
 
     playClickSound();
 
-    if (from === "left" && leftBeads > 0) {
-      // 左側の全てを右側へ移動
-      setRightBeads((prev) => prev + leftBeads);
-      setLeftBeads(0);
-    } else if (from === "right" && rightBeads > 0) {
-      // 右側の全てを左側へ移動
-      setLeftBeads((prev) => prev + rightBeads);
-      setRightBeads(0);
+    if (from === "left" && leftBeads.length > 0) {
+      // 左側の全てを右側へ移動（元の色を維持）
+      setRightBeads((prev) => [...prev, ...leftBeads]);
+      setLeftBeads([]);
+    } else if (from === "right" && rightBeads.length > 0) {
+      // 右側の全てを左側へ移動（元の色を維持）
+      setLeftBeads((prev) => [...prev, ...rightBeads]);
+      setRightBeads([]);
     }
   };
 
@@ -254,8 +264,12 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     playClickSound();
 
     // 初期状態に戻す
-    setLeftBeads(currentProblem.num1);
-    setRightBeads(currentProblem.num2);
+    setLeftBeads(
+      Array.from({ length: currentProblem.num1 }, () => "left" as const)
+    );
+    setRightBeads(
+      Array.from({ length: currentProblem.num2 }, () => "right" as const)
+    );
   };
 
   return (
@@ -317,7 +331,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
               </div>
 
               {/* 選択肢 */}
-              <div className="grid grid-cols-2 gap-4 mt-8 w-1/2">
+              <div className="grid grid-cols-2 gap-4 w-1/2">
                 {currentProblem.choices.map((choice: number, index: number) => {
                   const isSelected = selectedAnswer === choice;
                   const isCorrectChoice = choice === currentProblem.answer;
@@ -375,10 +389,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 {/* 左側エリア */}
                 <div className="flex-1 w-full sm:w-auto">
-                  <div className="text-center mb-2 text-sm font-semibold text-blue-600">
-                    {leftBeads}こ
-                  </div>
-                  {leftBeads > 0 && (
+                  {leftBeads.length > 0 && (
                     <button
                       onClick={() => handleMoveAll("left")}
                       disabled={showResult}
@@ -396,15 +407,16 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ぜんぶうごかす →
                     </button>
                   )}
-                  <div className="bg-blue-50 rounded-xl p-4 min-h-[200px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
-                    {Array.from({ length: leftBeads }, (_, i) => (
+                  <div className="bg-blue-50 rounded-xl p-4 min-h-[120px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                    {leftBeads.map((bead, index) => (
                       <button
-                        key={`left-${i}`}
-                        onClick={() => handleBeadMove("left")}
+                        key={`left-${index}`}
+                        onClick={() => handleBeadMove("left", index)}
                         disabled={showResult}
                         className={`
-                          w-10 h-10 rounded-full bg-blue-500 shadow-md
+                          w-10 h-10 rounded-full shadow-md
                           transition-all duration-200
+                          ${bead === "left" ? "bg-blue-500" : "bg-orange-500"}
                           ${
                             showResult
                               ? "cursor-not-allowed opacity-50"
@@ -413,6 +425,11 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                         `}
                       />
                     ))}
+                  </div>
+                  <div className="text-center mt-2">
+                    <div className="text-4xl sm:text-5xl font-bold text-blue-600">
+                      {leftBeads.length}
+                    </div>
                   </div>
                 </div>
 
@@ -428,10 +445,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
 
                 {/* 右側エリア */}
                 <div className="flex-1 w-full sm:w-auto">
-                  <div className="text-center mb-2 text-sm font-semibold text-orange-600">
-                    {rightBeads}こ
-                  </div>
-                  {rightBeads > 0 && (
+                  {rightBeads.length > 0 && (
                     <button
                       onClick={() => handleMoveAll("right")}
                       disabled={showResult}
@@ -449,15 +463,16 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ← ぜんぶうごかす
                     </button>
                   )}
-                  <div className="bg-orange-50 rounded-xl p-4 min-h-[200px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
-                    {Array.from({ length: rightBeads }, (_, i) => (
+                  <div className="bg-orange-50 rounded-xl p-4 min-h-[120px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                    {rightBeads.map((bead, index) => (
                       <button
-                        key={`right-${i}`}
-                        onClick={() => handleBeadMove("right")}
+                        key={`right-${index}`}
+                        onClick={() => handleBeadMove("right", index)}
                         disabled={showResult}
                         className={`
-                          w-10 h-10 rounded-full bg-orange-500 shadow-md
+                          w-10 h-10 rounded-full shadow-md
                           transition-all duration-200
+                          ${bead === "left" ? "bg-blue-500" : "bg-orange-500"}
                           ${
                             showResult
                               ? "cursor-not-allowed opacity-50"
@@ -467,24 +482,29 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       />
                     ))}
                   </div>
+                  <div className="text-center mt-2">
+                    <div className="text-4xl sm:text-5xl font-bold text-orange-600">
+                      {rightBeads.length}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* 合計表示とリセット */}
+              {/* 正解判定とリセット */}
               <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <div className="inline-block bg-white rounded-lg px-6 py-3 shadow-md">
-                  <div className="text-sm text-gray-600 mb-1">ぜんぶで</div>
-                  <div className="text-3xl font-bold text-green-600">
-                    {leftBeads + rightBeads}
-                  </div>
-                  {leftBeads + rightBeads === currentProblem.answer && (
-                    <div className="mt-2 text-green-600 font-bold animate-pulse">
+                {/* 正解判定：どちらかのエリアが答えと一致した場合 */}
+                {(leftBeads.length === currentProblem.answer &&
+                  rightBeads.length === 0) ||
+                (rightBeads.length === currentProblem.answer &&
+                  leftBeads.length === 0) ? (
+                  <div className="inline-block bg-white rounded-lg px-6 py-3 shadow-md">
+                    <div className="text-green-600 font-bold text-xl animate-pulse">
                       ✓ せいかい！
                     </div>
-                  )}
-                </div>
-                {(leftBeads !== currentProblem.num1 ||
-                  rightBeads !== currentProblem.num2) && (
+                  </div>
+                ) : null}
+                {(leftBeads.length !== currentProblem.num1 ||
+                  rightBeads.length !== currentProblem.num2) && (
                   <button
                     onClick={handleResetBeads}
                     disabled={showResult}
