@@ -257,21 +257,6 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     }
   };
 
-  // リセット関数（初期状態に戻す）
-  const handleResetBeads = () => {
-    if (showResult) return;
-
-    playClickSound();
-
-    // 初期状態に戻す
-    setLeftBeads(
-      Array.from({ length: currentProblem.num1 }, () => "left" as const)
-    );
-    setRightBeads(
-      Array.from({ length: currentProblem.num2 }, () => "right" as const)
-    );
-  };
-
   return (
     <div className="w-full">
       {/* 問題表示 */}
@@ -280,23 +265,36 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
           {/* スコア表示 */}
           {/* <div className="mb-6 text-center">
             <div className="inline-block bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 shadow-lg">
-              <div className="text-sm text-gray-600 mb-1">せいかいすう</div>
-              <div className="text-3xl font-bold text-blue-600">
+              <div className="text-xs text-gray-600 mb-1">せいかいすう</div>
+              <div className="text-2xl font-bold text-blue-600">
                 {score} / {totalAnswered}
               </div>
             </div>
           </div> */}
 
           <div className="flex-1">
-            <div className="text-2xl sm:text-3xl font-bold text-gray-700 mb-4">
+            <div className="flex justify-between items-center text-xl sm:text-2xl font-bold text-gray-700 mb-4">
               もんだい
+              {/* リセットボタン */}
+              <div className="text-center">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={resetGame}
+                  className="min-h-[44px] px-6 py-3"
+                >
+                  <RotateCcw className="h-5 w-5 mr-2" />
+                  リセット
+                </Button>
+              </div>
             </div>
+
             <div className="flex justify-center items-center mb-6">
               {/* 数値の視覚的表示 */}
               <div className="flex items-center justify-center gap-4 w-1/2">
                 {/* 最初の数 */}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                  <div className="text-4xl sm:text-6xl font-bold text-gray-800">
                     {currentProblem.num1}
                   </div>
                   <div className="flex flex-wrap justify-center gap-1 max-w-32 min-h-9">
@@ -305,13 +303,13 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                 </div>
 
                 {/* プラス記号 */}
-                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                <div className="text-4xl sm:text-6xl font-bold text-gray-800">
                   +
                 </div>
 
                 {/* 2番目の数 */}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                  <div className="text-4xl sm:text-6xl font-bold text-gray-800">
                     {currentProblem.num2}
                   </div>
                   <div className="flex flex-wrap justify-center gap-1 max-w-32 min-h-9">
@@ -320,12 +318,12 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                 </div>
 
                 {/* イコール記号 */}
-                <div className="text-5xl sm:text-7xl font-bold text-gray-800">
+                <div className="text-4xl sm:text-6xl font-bold text-gray-800">
                   =
                 </div>
 
                 {/* 答えの表示エリア */}
-                <div className="text-5xl sm:text-7xl font-bold text-gray-800 min-w-[80px]">
+                <div className="text-4xl sm:text-6xl font-bold text-gray-800 min-w-[80px]">
                   ?
                 </div>
               </div>
@@ -345,7 +343,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       onClick={() => handleAnswerClick(choice)}
                       disabled={showResult}
                       className={`
-                    relative p-6 rounded-2xl text-4xl sm:text-5xl font-bold
+                    relative p-4 rounded-2xl text-3xl sm:text-4xl font-bold
                     transition-all duration-300 transform
                     ${
                       showResult
@@ -365,12 +363,12 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                     >
                       {choice}
                       {showCorrect && (
-                        <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
+                        <div className="absolute -top-2 -right-2 text-2xl animate-bounce">
                           ✓
                         </div>
                       )}
                       {showWrong && (
-                        <div className="absolute -top-2 -right-2 text-3xl animate-bounce">
+                        <div className="absolute -top-2 -right-2 text-2xl animate-bounce">
                           ✗
                         </div>
                       )}
@@ -382,7 +380,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
 
             {/* おはじきで計算 */}
             <div className="mt-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-gray-200">
-              <div className="text-lg font-bold text-gray-700 mb-4 text-center">
+              <div className="text-base font-bold text-gray-700 mb-4 text-center">
                 おはじきでかぞえてみよう！
               </div>
 
@@ -394,7 +392,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       onClick={() => handleMoveAll("left")}
                       disabled={showResult}
                       className={`
-                        w-full mb-2 py-2 px-4 rounded-lg text-sm font-semibold
+                        w-full mb-2 py-2 px-4 rounded-lg text-xs font-semibold
                         bg-blue-500 text-white shadow-md
                         transition-all duration-200
                         ${
@@ -427,7 +425,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                     ))}
                   </div>
                   <div className="text-center mt-2">
-                    <div className="text-4xl sm:text-5xl font-bold text-blue-600">
+                    <div className="text-3xl sm:text-4xl font-bold text-blue-600">
                       {leftBeads.length}
                     </div>
                   </div>
@@ -438,7 +436,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                   <div className="text-2xl text-gray-400 rotate-90 sm:rotate-0">
                     ⇄
                   </div>
-                  <div className="text-lg font-bold text-gray-700">
+                  <div className="text-base font-bold text-gray-700">
                     うごかす
                   </div>
                 </div>
@@ -450,7 +448,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       onClick={() => handleMoveAll("right")}
                       disabled={showResult}
                       className={`
-                        w-full mb-2 py-2 px-4 rounded-lg text-sm font-semibold
+                        w-full mb-2 py-2 px-4 rounded-lg text-xs font-semibold
                         bg-orange-500 text-white shadow-md
                         transition-all duration-200
                         ${
@@ -483,62 +481,15 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                     ))}
                   </div>
                   <div className="text-center mt-2">
-                    <div className="text-4xl sm:text-5xl font-bold text-orange-600">
+                    <div className="text-3xl sm:text-4xl font-bold text-orange-600">
                       {rightBeads.length}
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* 正解判定とリセット */}
-              <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-                {/* 正解判定：どちらかのエリアが答えと一致した場合 */}
-                {(leftBeads.length === currentProblem.answer &&
-                  rightBeads.length === 0) ||
-                (rightBeads.length === currentProblem.answer &&
-                  leftBeads.length === 0) ? (
-                  <div className="inline-block bg-white rounded-lg px-6 py-3 shadow-md">
-                    <div className="text-green-600 font-bold text-xl animate-pulse">
-                      ✓ せいかい！
-                    </div>
-                  </div>
-                ) : null}
-                {(leftBeads.length !== currentProblem.num1 ||
-                  rightBeads.length !== currentProblem.num2) && (
-                  <button
-                    onClick={handleResetBeads}
-                    disabled={showResult}
-                    className={`
-                      py-2 px-4 rounded-lg text-sm font-semibold
-                      bg-gray-500 text-white shadow-md
-                      transition-all duration-200
-                      ${
-                        showResult
-                          ? "cursor-not-allowed opacity-50"
-                          : "cursor-pointer hover:bg-gray-600 active:scale-95"
-                      }
-                    `}
-                  >
-                    🔄 はじめから
-                  </button>
-                )}
-              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* リセットボタン */}
-      <div className="text-center">
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={resetGame}
-          className="min-h-[44px] px-6 py-3"
-        >
-          <RotateCcw className="h-5 w-5 mr-2" />
-          はじめから
-        </Button>
       </div>
 
       {/* 花丸表示 */}
@@ -570,7 +521,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
             {/* メイン花丸 */}
             <div className="relative z-10">
               <div className="mb-2 sm:mb-4 flex justify-center">
-                <div className="w-16 h-16 sm:w-24 sm:h-24 text-4xl sm:text-6xl animate-bounce">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 text-3xl sm:text-5xl animate-bounce">
                   <img
                     src="/hanamaru.svg"
                     alt="よくできました"
@@ -578,10 +529,10 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                   />
                 </div>
               </div>
-              <div className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3 animate-pulse">
+              <div className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3 animate-pulse">
                 せいかい！
               </div>
-              <div className="text-lg sm:text-2xl text-gray-700 mb-2">
+              <div className="text-base sm:text-xl text-gray-700 mb-2">
                 こたえは {currentProblem.answer} です
               </div>
 
