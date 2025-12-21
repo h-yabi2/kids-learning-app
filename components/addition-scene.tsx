@@ -405,7 +405,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ぜんぶうごかす →
                     </button>
                   )}
-                  <div className="bg-blue-50 rounded-xl p-4 min-h-[120px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                  <div className="bg-blue-50 rounded-xl p-4 min-h-[100px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {leftBeads.map((bead, index) => (
                       <button
                         key={`left-${index}`}
@@ -461,7 +461,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ← ぜんぶうごかす
                     </button>
                   )}
-                  <div className="bg-orange-50 rounded-xl p-4 min-h-[120px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                  <div className="bg-orange-50 rounded-xl p-4 min-h-[100px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {rightBeads.map((bead, index) => (
                       <button
                         key={`right-${index}`}
