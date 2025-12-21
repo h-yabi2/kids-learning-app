@@ -293,26 +293,26 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
               {/* 数値の視覚的表示 */}
               <div className="flex items-center justify-center gap-4 w-1/2">
                 {/* 最初の数 */}
-                <div className="flex flex-col items-center gap-2">
+                <div className="relative flex flex-col items-center gap-2">
                   <div className="text-4xl sm:text-6xl font-bold text-gray-800">
                     {currentProblem.num1}
                   </div>
-                  <div className="flex flex-wrap justify-center gap-1 max-w-32 min-h-9">
+                  <div className="absolute top-full flex flex-wrap justify-center gap-1 w-[100px] min-h-9 mt-1">
                     {generateDots(currentProblem.num1)}
                   </div>
                 </div>
 
                 {/* プラス記号 */}
-                <div className="text-4xl sm:text-6xl font-bold text-gray-800">
+                <div className="text-4xl sm:text-6xl font-bold text-gray-800 mx-4">
                   +
                 </div>
 
                 {/* 2番目の数 */}
-                <div className="flex flex-col items-center gap-2">
+                <div className="relative flex flex-col items-center gap-2">
                   <div className="text-4xl sm:text-6xl font-bold text-gray-800">
                     {currentProblem.num2}
                   </div>
-                  <div className="flex flex-wrap justify-center gap-1 max-w-32 min-h-9">
+                  <div className="absolute top-full flex flex-wrap justify-center gap-1 w-[100px] min-h-9 mt-1">
                     {generateDots(currentProblem.num2)}
                   </div>
                 </div>
@@ -412,7 +412,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                         onClick={() => handleBeadMove("left", index)}
                         disabled={showResult}
                         className={`
-                          w-10 h-10 rounded-full shadow-md
+                          w-8 h-8 rounded-full shadow-md
                           transition-all duration-200
                           ${bead === "left" ? "bg-blue-500" : "bg-orange-500"}
                           ${
@@ -468,7 +468,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                         onClick={() => handleBeadMove("right", index)}
                         disabled={showResult}
                         className={`
-                          w-10 h-10 rounded-full shadow-md
+                          w-8 h-8 rounded-full shadow-md
                           transition-all duration-200
                           ${bead === "left" ? "bg-blue-500" : "bg-orange-500"}
                           ${
