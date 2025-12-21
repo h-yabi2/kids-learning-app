@@ -254,6 +254,44 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     }
   };
 
+  // 全て移動する関数
+  const handleMoveAll = (from: "left" | "right") => {
+    if (showResult) return;
+
+    playClickSound();
+
+    if (from === "left" && leftBeads > 0) {
+      const beadsToMove = Array.from(
+        { length: leftBeads },
+        () => "left" as const
+      );
+      setAnswerBeads((prev) => [...prev, ...beadsToMove]);
+      setLeftBeads(0);
+    } else if (from === "right" && rightBeads > 0) {
+      const beadsToMove = Array.from(
+        { length: rightBeads },
+        () => "right" as const
+      );
+      setAnswerBeads((prev) => [...prev, ...beadsToMove]);
+      setRightBeads(0);
+    }
+  };
+
+  // 全て戻す関数
+  const handleResetAll = () => {
+    if (showResult) return;
+
+    playClickSound();
+
+    // 答えエリアのおはじきを全て元の位置に戻す
+    const leftCount = answerBeads.filter((b) => b === "left").length;
+    const rightCount = answerBeads.filter((b) => b === "right").length;
+
+    setLeftBeads((prev) => prev + leftCount);
+    setRightBeads((prev) => prev + rightCount);
+    setAnswerBeads([]);
+  };
+
   return (
     <div className="w-full">
       {/* 問題表示 */}
@@ -374,6 +412,24 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                   <div className="text-center mb-2 text-sm font-semibold text-blue-600">
                     {currentProblem.num1}こ
                   </div>
+                  {leftBeads > 0 && (
+                    <button
+                      onClick={() => handleMoveAll("left")}
+                      disabled={showResult}
+                      className={`
+                        w-full mb-2 py-2 px-4 rounded-lg text-sm font-semibold
+                        bg-blue-500 text-white shadow-md
+                        transition-all duration-200
+                        ${
+                          showResult
+                            ? "cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:bg-blue-600 active:scale-95"
+                        }
+                      `}
+                    >
+                      ぜんぶうごかす →
+                    </button>
+                  )}
                   <div className="bg-blue-50 rounded-xl p-4 min-h-[200px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {Array.from({ length: leftBeads }, (_, i) => (
                       <button
@@ -410,6 +466,24 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                   <div className="text-center mb-2 text-sm font-semibold text-green-600">
                     {answerBeads.length}こ
                   </div>
+                  {answerBeads.length > 0 && (
+                    <button
+                      onClick={handleResetAll}
+                      disabled={showResult}
+                      className={`
+                        w-full mb-2 py-2 px-4 rounded-lg text-sm font-semibold
+                        bg-gray-500 text-white shadow-md
+                        transition-all duration-200
+                        ${
+                          showResult
+                            ? "cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:bg-gray-600 active:scale-95"
+                        }
+                      `}
+                    >
+                      ← ぜんぶもどす
+                    </button>
+                  )}
                   <div className="bg-green-50 rounded-xl p-4 min-h-[200px] border-2 border-green-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {answerBeads.map((bead, index) => (
                       <button
@@ -453,6 +527,24 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                   <div className="text-center mb-2 text-sm font-semibold text-orange-600">
                     {currentProblem.num2}こ
                   </div>
+                  {rightBeads > 0 && (
+                    <button
+                      onClick={() => handleMoveAll("right")}
+                      disabled={showResult}
+                      className={`
+                        w-full mb-2 py-2 px-4 rounded-lg text-sm font-semibold
+                        bg-orange-500 text-white shadow-md
+                        transition-all duration-200
+                        ${
+                          showResult
+                            ? "cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:bg-orange-600 active:scale-95"
+                        }
+                      `}
+                    >
+                      ← ぜんぶうごかす
+                    </button>
+                  )}
                   <div className="bg-orange-50 rounded-xl p-4 min-h-[200px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {Array.from({ length: rightBeads }, (_, i) => (
                       <button
