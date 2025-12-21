@@ -23,6 +23,11 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
 
+  // おはじきの状態管理
+  const [leftBeads, setLeftBeads] = useState(0);
+  const [rightBeads, setRightBeads] = useState(0);
+  const [answerBeads, setAnswerBeads] = useState<Array<"left" | "right">>([]);
+
   // 音声キャッシュ用のMap
   const audioCache = useRef(new Map<string, string>()).current;
 
@@ -139,6 +144,10 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     if (currentProblem) {
       const problemText = `${currentProblem.num1}たす${currentProblem.num2}は？`;
       speakText(problemText);
+      // おはじきをリセット
+      setLeftBeads(currentProblem.num1);
+      setRightBeads(currentProblem.num2);
+      setAnswerBeads([]);
     }
   }, [currentProblem, speakText]);
 
@@ -181,6 +190,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     setShowResult(false);
     setIsCorrect(false);
     setShowHanamaru(false);
+    // おはじきをリセット（useEffectで自動的にリセットされるが、念のため）
   };
 
   const resetGame = () => {
@@ -191,6 +201,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
     setShowHanamaru(false);
     setScore(0);
     setTotalAnswered(0);
+    // おはじきをリセット（useEffectで自動的にリセットされるが、念のため）
   };
 
   // ドットを生成する関数（視覚的な数え方のサポート）
@@ -202,6 +213,45 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
         style={{ animationDelay: `${i * 0.1}s` }}
       />
     ));
+  };
+
+  // おはじきを移動する関数
+  const handleBeadMove = (
+    from: "left" | "right" | "answer",
+    to: "left" | "right" | "answer",
+    index?: number
+  ) => {
+    if (showResult) return; // 答えが表示されている場合は無視
+
+    playClickSound();
+
+    if (from === "left" && to === "answer") {
+      // 左側から答えエリアへ
+      if (leftBeads > 0) {
+        setLeftBeads((prev) => prev - 1);
+        setAnswerBeads((prev) => [...prev, "left"]);
+      }
+    } else if (from === "right" && to === "answer") {
+      // 右側から答えエリアへ
+      if (rightBeads > 0) {
+        setRightBeads((prev) => prev - 1);
+        setAnswerBeads((prev) => [...prev, "right"]);
+      }
+    } else if (from === "answer" && to === "left" && index !== undefined) {
+      // 答えエリアから左側へ戻す
+      const bead = answerBeads[index];
+      if (bead === "left") {
+        setAnswerBeads((prev) => prev.filter((_, i) => i !== index));
+        setLeftBeads((prev) => prev + 1);
+      }
+    } else if (from === "answer" && to === "right" && index !== undefined) {
+      // 答えエリアから右側へ戻す
+      const bead = answerBeads[index];
+      if (bead === "right") {
+        setAnswerBeads((prev) => prev.filter((_, i) => i !== index));
+        setRightBeads((prev) => prev + 1);
+      }
+    }
   };
 
   return (
@@ -309,6 +359,134 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                     </button>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* おはじきで計算 */}
+            <div className="mt-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border-2 border-gray-200">
+              <div className="text-lg font-bold text-gray-700 mb-4 text-center">
+                おはじきでかぞえてみよう！
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                {/* 左側エリア */}
+                <div className="flex-1 w-full sm:w-auto">
+                  <div className="text-center mb-2 text-sm font-semibold text-blue-600">
+                    {currentProblem.num1}こ
+                  </div>
+                  <div className="bg-blue-50 rounded-xl p-4 min-h-[200px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                    {Array.from({ length: leftBeads }, (_, i) => (
+                      <button
+                        key={`left-${i}`}
+                        onClick={() => handleBeadMove("left", "answer")}
+                        disabled={showResult}
+                        className={`
+                          w-10 h-10 rounded-full bg-blue-500 shadow-md
+                          transition-all duration-200
+                          ${
+                            showResult
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer hover:scale-110 active:scale-95 hover:shadow-lg"
+                          }
+                        `}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* 中央の矢印 */}
+                <div className="flex flex-row sm:flex-col items-center gap-2">
+                  <div className="text-2xl text-gray-400 rotate-90 sm:rotate-0">
+                    →
+                  </div>
+                  <div className="text-lg font-bold text-gray-700">こたえ</div>
+                  <div className="text-2xl text-gray-400 rotate-90 sm:rotate-0">
+                    ←
+                  </div>
+                </div>
+
+                {/* 答えエリア */}
+                <div className="flex-1 w-full sm:w-auto">
+                  <div className="text-center mb-2 text-sm font-semibold text-green-600">
+                    {answerBeads.length}こ
+                  </div>
+                  <div className="bg-green-50 rounded-xl p-4 min-h-[200px] border-2 border-green-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                    {answerBeads.map((bead, index) => (
+                      <button
+                        key={`answer-${index}`}
+                        onClick={() =>
+                          handleBeadMove(
+                            "answer",
+                            bead === "left" ? "left" : "right",
+                            index
+                          )
+                        }
+                        disabled={showResult}
+                        className={`
+                          w-10 h-10 rounded-full shadow-md
+                          transition-all duration-200
+                          ${bead === "left" ? "bg-blue-500" : "bg-orange-500"}
+                          ${
+                            showResult
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer hover:scale-110 active:scale-95 hover:shadow-lg"
+                          }
+                        `}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* 右側の矢印 */}
+                <div className="flex flex-row sm:flex-col items-center gap-2">
+                  <div className="text-2xl text-gray-400 rotate-90 sm:rotate-0">
+                    →
+                  </div>
+                  <div className="text-lg font-bold text-gray-700">こたえ</div>
+                  <div className="text-2xl text-gray-400 rotate-90 sm:rotate-0">
+                    ←
+                  </div>
+                </div>
+
+                {/* 右側エリア */}
+                <div className="flex-1 w-full sm:w-auto">
+                  <div className="text-center mb-2 text-sm font-semibold text-orange-600">
+                    {currentProblem.num2}こ
+                  </div>
+                  <div className="bg-orange-50 rounded-xl p-4 min-h-[200px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                    {Array.from({ length: rightBeads }, (_, i) => (
+                      <button
+                        key={`right-${i}`}
+                        onClick={() => handleBeadMove("right", "answer")}
+                        disabled={showResult}
+                        className={`
+                          w-10 h-10 rounded-full bg-orange-500 shadow-md
+                          transition-all duration-200
+                          ${
+                            showResult
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer hover:scale-110 active:scale-95 hover:shadow-lg"
+                          }
+                        `}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 合計表示 */}
+              <div className="mt-4 text-center">
+                <div className="inline-block bg-white rounded-lg px-6 py-3 shadow-md">
+                  <div className="text-sm text-gray-600 mb-1">ぜんぶで</div>
+                  <div className="text-3xl font-bold text-green-600">
+                    {answerBeads.length}
+                  </div>
+                  {answerBeads.length === currentProblem.answer && (
+                    <div className="mt-2 text-green-600 font-bold animate-pulse">
+                      ✓ せいかい！
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
