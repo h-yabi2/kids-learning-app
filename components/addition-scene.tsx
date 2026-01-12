@@ -405,18 +405,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ぜんぶうごかす →
                     </button>
                   )} */}
-                  <div
-                    onClick={() => {
-                      if (!showResult && leftBeads.length > 0) {
-                        handleBeadMove("left", 0);
-                      }
-                    }}
-                    className={`
-                      bg-blue-50 rounded-xl p-4 min-h-[100px] border-2 border-blue-200 
-                      flex flex-wrap gap-2 justify-center items-start content-start
-                      ${showResult ? "cursor-not-allowed" : "cursor-pointer"}
-                    `}
-                  >
+                  <div className="bg-blue-50 rounded-xl p-4 min-h-[100px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {leftBeads.map((bead, index) => (
                       <button
                         key={`left-${index}`}
@@ -475,18 +464,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ← ぜんぶうごかす
                     </button>
                   )} */}
-                  <div
-                    onClick={() => {
-                      if (!showResult && rightBeads.length > 0) {
-                        handleBeadMove("right", 0);
-                      }
-                    }}
-                    className={`
-                      bg-orange-50 rounded-xl p-4 min-h-[100px] border-2 border-orange-200 
-                      flex flex-wrap gap-2 justify-center items-start content-start
-                      ${showResult ? "cursor-not-allowed" : "cursor-pointer"}
-                    `}
-                  >
+                  <div className="bg-orange-50 rounded-xl p-4 min-h-[100px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {rightBeads.map((bead, index) => (
                       <button
                         key={`right-${index}`}
