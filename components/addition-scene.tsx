@@ -241,21 +241,21 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
   };
 
   // 全て移動する関数（色を維持）
-  const handleMoveAll = (from: "left" | "right") => {
-    if (showResult) return;
+  // const handleMoveAll = (from: "left" | "right") => {
+  //   if (showResult) return;
 
-    playClickSound();
+  //   playClickSound();
 
-    if (from === "left" && leftBeads.length > 0) {
-      // 左側の全てを右側へ移動（元の色を維持）
-      setRightBeads((prev) => [...prev, ...leftBeads]);
-      setLeftBeads([]);
-    } else if (from === "right" && rightBeads.length > 0) {
-      // 右側の全てを左側へ移動（元の色を維持）
-      setLeftBeads((prev) => [...prev, ...rightBeads]);
-      setRightBeads([]);
-    }
-  };
+  //   if (from === "left" && leftBeads.length > 0) {
+  //     // 左側の全てを右側へ移動（元の色を維持）
+  //     setRightBeads((prev) => [...prev, ...leftBeads]);
+  //     setLeftBeads([]);
+  //   } else if (from === "right" && rightBeads.length > 0) {
+  //     // 右側の全てを左側へ移動（元の色を維持）
+  //     setLeftBeads((prev) => [...prev, ...rightBeads]);
+  //     setRightBeads([]);
+  //   }
+  // };
 
   return (
     <div className="w-full">
@@ -387,7 +387,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 {/* 左側エリア */}
                 <div className="flex-1 w-full sm:w-auto">
-                  {leftBeads.length > 0 && (
+                  {/* {leftBeads.length > 0 && (
                     <button
                       onClick={() => handleMoveAll("left")}
                       disabled={showResult}
@@ -404,7 +404,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                     >
                       ぜんぶうごかす →
                     </button>
-                  )}
+                  )} */}
                   <div className="bg-blue-50 rounded-xl p-4 min-h-[100px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {leftBeads.map((bead, index) => (
                       <button
@@ -424,11 +424,11 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       />
                     ))}
                   </div>
-                  <div className="text-center mt-2">
+                  {/* <div className="text-center mt-2">
                     <div className="text-3xl sm:text-4xl font-bold text-blue-600">
                       {leftBeads.length}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* 中央の矢印（双方向） */}
@@ -443,7 +443,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
 
                 {/* 右側エリア */}
                 <div className="flex-1 w-full sm:w-auto">
-                  {rightBeads.length > 0 && (
+                  {/* {rightBeads.length > 0 && (
                     <button
                       onClick={() => handleMoveAll("right")}
                       disabled={showResult}
@@ -460,7 +460,7 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                     >
                       ← ぜんぶうごかす
                     </button>
-                  )}
+                  )} */}
                   <div className="bg-orange-50 rounded-xl p-4 min-h-[100px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
                     {rightBeads.map((bead, index) => (
                       <button
@@ -480,11 +480,11 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       />
                     ))}
                   </div>
-                  <div className="text-center mt-2">
+                  {/* <div className="text-center mt-2">
                     <div className="text-3xl sm:text-4xl font-bold text-orange-600">
                       {rightBeads.length}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
