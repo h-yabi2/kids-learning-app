@@ -405,11 +405,25 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ぜんぶうごかす →
                     </button>
                   )} */}
-                  <div className="bg-blue-50 rounded-xl p-4 min-h-[100px] border-2 border-blue-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                  <div
+                    onClick={() => {
+                      if (!showResult && leftBeads.length > 0) {
+                        handleBeadMove("left", 0);
+                      }
+                    }}
+                    className={`
+                      bg-blue-50 rounded-xl p-4 min-h-[100px] border-2 border-blue-200 
+                      flex flex-wrap gap-2 justify-center items-start content-start
+                      ${showResult ? "cursor-not-allowed" : "cursor-pointer"}
+                    `}
+                  >
                     {leftBeads.map((bead, index) => (
                       <button
                         key={`left-${index}`}
-                        onClick={() => handleBeadMove("left", index)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBeadMove("left", index);
+                        }}
                         disabled={showResult}
                         className={`
                           w-8 h-8 rounded-full shadow-md
@@ -461,11 +475,25 @@ export default function AdditionScene({ onProblemClick }: AdditionSceneProps) {
                       ← ぜんぶうごかす
                     </button>
                   )} */}
-                  <div className="bg-orange-50 rounded-xl p-4 min-h-[100px] border-2 border-orange-200 flex flex-wrap gap-2 justify-center items-start content-start">
+                  <div
+                    onClick={() => {
+                      if (!showResult && rightBeads.length > 0) {
+                        handleBeadMove("right", 0);
+                      }
+                    }}
+                    className={`
+                      bg-orange-50 rounded-xl p-4 min-h-[100px] border-2 border-orange-200 
+                      flex flex-wrap gap-2 justify-center items-start content-start
+                      ${showResult ? "cursor-not-allowed" : "cursor-pointer"}
+                    `}
+                  >
                     {rightBeads.map((bead, index) => (
                       <button
                         key={`right-${index}`}
-                        onClick={() => handleBeadMove("right", index)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBeadMove("right", index);
+                        }}
                         disabled={showResult}
                         className={`
                           w-8 h-8 rounded-full shadow-md
