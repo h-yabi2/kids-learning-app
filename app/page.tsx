@@ -5,6 +5,7 @@ import { Volume2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import HiraganaTab from "@/components/tabs/HiraganaTab";
+import KatakanaTab from "@/components/tabs/KatakanaTab";
 import ColorsTab from "@/components/tabs/ColorsTab";
 import ParkTab from "@/components/tabs/ParkTab";
 import NumbersTab from "@/components/tabs/NumbersTab";
@@ -104,6 +105,10 @@ export default function ColorLearningApp() {
     hiragana: {
       title: "ひらがな",
       description: "ひらがなをタップして、ことばをおぼえよう！",
+    },
+    katakana: {
+      title: "カタカナ",
+      description: "カタカナをタップして、ことばをおぼえよう！",
     },
     colors: {
       title: "いろ",
@@ -257,6 +262,11 @@ export default function ColorLearningApp() {
     // 音声読み上げは hiragana-scene.tsx 内で行われるため、ここでは何もしない
   };
 
+  const handleKatakanaClick = (item: any) => {
+    // カタカナクリック時はポップアップ表示なし（書き順練習ダイアログのみ）
+    // 音声読み上げは katakana-scene.tsx 内で行われるため、ここでは何もしない
+  };
+
   const handleFriendClick = (friend: any) => {
     setSelectedCrayon({
       id: friend.id ?? "friend",
@@ -295,6 +305,7 @@ export default function ColorLearningApp() {
               .filter(
                 ([tabId]) =>
                   tabId === "hiragana" ||
+                  tabId === "katakana" ||
                   tabId === "numbers" ||
                   tabId === "addition"
               )
@@ -332,6 +343,9 @@ export default function ColorLearningApp() {
         <Card className="bg-transparent shadow-none border-none w-full">
           {activeTab === "hiragana" && (
             <HiraganaTab onHiraganaClick={handleHiraganaClick} />
+          )}
+          {activeTab === "katakana" && (
+            <KatakanaTab onKatakanaClick={handleKatakanaClick} />
           )}
           {activeTab === "colors" && (
             <ColorsTab crayons={crayons} onCrayonClick={handleCrayonClick} />
