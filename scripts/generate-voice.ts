@@ -1,5 +1,5 @@
 // scripts/generate-voice.ts
-import { mkdir, writeFile, access } from "node:fs/promises";
+import { mkdir, writeFile, access, readdir, unlink } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import { voiceHash } from "../lib/voice-hash";
@@ -109,6 +109,12 @@ async function main() {
 
   for (const text of texts) {
     const hash = voiceHash(text);
+    if (manifest[hash] && manifest[hash] !== text) {
+      throw new Error(
+        `Hash collision detected: "${manifest[hash]}" and "${text}" both hash to ${hash}. ` +
+          `Rename one of the source texts or switch to a wider hash.`
+      );
+    }
     manifest[hash] = text;
     const outPath = resolve(OUT_DIR, `${hash}.mp3`);
     if (await fileExists(outPath)) {
@@ -123,13 +129,25 @@ async function main() {
     process.stdout.write(" ok\n");
   }
 
+  const existing = await readdir(OUT_DIR);
+  let pruned = 0;
+  for (const file of existing) {
+    if (!file.endsWith(".mp3")) continue;
+    const hash = file.slice(0, -4);
+    if (!manifest[hash]) {
+      await unlink(resolve(OUT_DIR, file));
+      pruned++;
+      console.log(`[prune] ${file}`);
+    }
+  }
+
   await writeFile(
     resolve(OUT_DIR, "manifest.json"),
     JSON.stringify(manifest, null, 2) + "\n"
   );
 
   console.log(
-    `完了: 生成 ${generated} / スキップ ${skipped} / 合計 ${texts.length}`
+    `完了: 生成 ${generated} / スキップ ${skipped} / プルーン ${pruned} / 合計 ${texts.length}`
   );
 }
 
