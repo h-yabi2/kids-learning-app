@@ -39,13 +39,15 @@ export default function RootLayout({
     <html lang="ja">
       <body className={notoSansJP.variable}>
         {children}
-        <footer className="w-full py-2 text-center text-xs text-gray-400">
-          音声:{" "}
+        <footer
+          className="fixed bottom-0 left-0 right-0 py-1 text-center text-[10px] text-gray-500 bg-white/60 backdrop-blur-sm z-30 pointer-events-none"
+          style={{ paddingBottom: "calc(0.25rem + env(safe-area-inset-bottom))" }}
+        >
           <a
             href="https://voicevox.hiho.jp/"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline"
+            className="underline pointer-events-auto"
           >
             VOICEVOX:青山龍星
           </a>
