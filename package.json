@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "gen:voice": "dotenv -e .env.local -- tsx scripts/generate-voice.ts",
+    "lint": "next lint",
+    "start": "next start"
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.2.0",
@@ -64,8 +65,10 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.3",
     "typescript": "^5"
   }
 }
