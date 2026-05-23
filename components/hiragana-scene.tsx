@@ -14,6 +14,8 @@ import {
   strokeOrderData,
   type HiraganaItem,
 } from "@/lib/hiragana-data";
+import { speakText, preloadVoice } from "@/lib/voice";
+import { hiraganaSceneTexts } from "@/lib/voice-texts";
 
 interface HiraganaSceneProps {
   onHiraganaClick: (item: HiraganaItem) => void;
@@ -82,8 +84,10 @@ export default function HiraganaScene({
     };
   }, []);
 
-  // 音声キャッシュ用のMap
-  const audioCache = useRef(new Map<string, string>()).current;
+  // 音声プリロード
+  useEffect(() => {
+    preloadVoice(hiraganaSceneTexts());
+  }, []);
 
   // クリック効果音を生成する関数
   const playClickSound = useCallback(() => {
@@ -116,84 +120,6 @@ export default function HiraganaScene({
     }
   }, []);
 
-  // Text-to-speech function (最適化版)
-  const speakText = useCallback(
-    async (text: string, lang = "ja-JP") => {
-      try {
-        // キャッシュキーを作成
-        const cacheKey = `${text}-ja-JP-Neural2-C`;
-
-        // キャッシュされた音声があるかチェック
-        if (audioCache.has(cacheKey)) {
-          const cachedUrl = audioCache.get(cacheKey)!;
-          const audio = new Audio(cachedUrl);
-          await audio.play();
-          console.log("☁️ キャッシュから音声を再生");
-          return;
-        }
-
-        // TTS APIを呼び出し
-        const startTime = performance.now();
-        const response = await fetch("/api/tts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text: text,
-            voice: "ja-JP-Neural2-C",
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("TTS API request failed");
-        }
-
-        const data = await response.json();
-        const apiTime = performance.now() - startTime;
-
-        // 非同期で音声データを処理
-        const processStartTime = performance.now();
-        const audioBlob = new Blob(
-          [Uint8Array.from(atob(data.audio), (c) => c.charCodeAt(0))],
-          { type: data.format }
-        );
-
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const processTime = performance.now() - processStartTime;
-
-        // キャッシュに保存
-        audioCache.set(cacheKey, audioUrl);
-
-        const audio = new Audio(audioUrl);
-
-        // 再生開始
-        await audio.play();
-        const totalTime = performance.now() - startTime;
-
-        console.log("🎵 TTS パフォーマンス:", {
-          apiTime: `${apiTime.toFixed(2)}ms`,
-          processTime: `${processTime.toFixed(2)}ms`,
-          totalTime: `${totalTime.toFixed(2)}ms`,
-          cacheSize: audioCache.size,
-        });
-      } catch (error) {
-        console.error("TTS Error:", error);
-        console.log("🔄 Falling back to Web Speech API");
-        // フォールバック: Web Speech APIを使用
-        if ("speechSynthesis" in window) {
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = lang;
-          utterance.rate = 0.7;
-          utterance.pitch = 1.2;
-          utterance.volume = 0.9;
-          speechSynthesis.speak(utterance);
-        }
-      }
-    },
-    [audioCache]
-  );
-
   const handleCharacterClick = useCallback(
     (item: HiraganaItem) => {
       console.log("🎬 handleCharacterClickが呼ばれました:", item);
@@ -209,7 +135,7 @@ export default function HiraganaScene({
       onHiraganaClick(item);
       console.log("✅ ダイアログを開きました");
     },
-    [onHiraganaClick, speakText, playClickSound]
+    [onHiraganaClick, playClickSound]
   );
 
   const handleKotoClick = useCallback(() => {
