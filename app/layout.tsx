@@ -37,7 +37,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={notoSansJP.variable}>{children}</body>
+      <body className={notoSansJP.variable}>
+        {children}
+        <footer className="w-full py-2 text-center text-xs text-gray-400">
+          音声:{" "}
+          <a
+            href="https://voicevox.hiho.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            VOICEVOX:青山龍星
+          </a>
+        </footer>
+      </body>
     </html>
   );
 }
