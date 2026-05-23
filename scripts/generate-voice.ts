@@ -4,6 +4,7 @@ import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import { voiceHash } from "../lib/voice-hash";
 import { listAllVoiceTexts } from "../lib/voice-texts";
+import { toSynthesisText } from "../lib/voice-pronunciations";
 
 const VOICEVOX_URL = process.env.VOICEVOX_URL ?? "http://localhost:50021";
 const SPEAKER_ID = process.env.VOICEVOX_SPEAKER_ID;
@@ -122,7 +123,7 @@ async function main() {
       continue;
     }
     process.stdout.write(`[gen] ${hash} ${text.slice(0, 20)}…`);
-    const wav = await synthesizeWav(text);
+    const wav = await synthesizeWav(toSynthesisText(text));
     const mp3 = await wavToMp3(wav);
     await writeFile(outPath, mp3);
     generated++;
